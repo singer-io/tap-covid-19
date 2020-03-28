@@ -1,0 +1,52 @@
+{
+  "type": ["null", "object"],
+  "additionalProperties": false,
+  "properties": {
+    "git_path": {
+      "type": ["null", "string"]
+    },
+    "git_sha": {
+      "type": ["null", "string"]
+    },
+    "git_file_name": {
+      "type": ["null", "string"]
+    },
+    "git_last_modified": {
+      "type": ["null", "string"],
+      "format": "date-time"
+    },
+    "row_number": {
+      "type": ["null", "integer"]
+    },
+    "state": {
+      "type": ["null", "string"]
+    },
+    "covid_19_site_old": {
+      "type": ["null", "string"]
+    },
+    "covid_19_site": {
+      "type": ["null", "string"]
+    },
+    "covid_19_site_secondary": {
+      "type": ["null", "string"]
+    },
+    "twitter": {
+      "type": ["null", "string"]
+    },
+    "pui": {
+      "type": ["null", "string"]
+    },
+    "pum": {
+      "type": ["null", "string"]
+    },
+    "notes": {
+      "type": ["null", "string"]
+    },
+    "fips": {
+      "type": ["null", "string"]
+    },
+    "name": {
+      "type": ["null", "string"]
+    }
+  }
+}

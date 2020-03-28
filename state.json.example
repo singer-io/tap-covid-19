@@ -1,7 +1,36 @@
 {
-	"currently_syncing": "users",
+	"currently_syncing": "jh_csse_daily_files",
 	"bookmarks": {
-		"model_files": "2019-10-13T19:53:36.000000Z",
-		"view_files": "2019-10-13T18:50:11.000000Z"
-	}
+		"c19_trk_us_states_daily": 1585425314448,
+		"nytimes_us_states": 1585425318871,
+		"eu_daily_files": "2020-01-01T00:00:00Z",
+		"c19_trk_us_daily_files": "2020-01-01T00:00:00Z",
+		"neherlab_country_codes_files": "2020-01-01T00:00:00Z",
+		"neherlab_population": 1585425494713,
+		"nytimes_us_states_files": "2020-01-01T00:00:00Z",
+		"c19_trk_us_states_current": 1585425314001,
+		"c19_trk_us_population_states_files": "2020-01-01T00:00:00Z",
+		"c19_trk_us_population_states_age_groups": 1585425300888,
+		"c19_trk_us_states_current_files": "2020-01-01T00:00:00Z",
+		"jh_csse_daily_files": "2020-01-01T00:00:00Z",
+		"c19_trk_us_daily": 1585425316108,
+		"neherlab_case_counts_files": "2020-01-01T00:00:00Z",
+		"c19_trk_us_states_daily_files": "2020-01-01T00:00:00Z",
+		"neherlab_country_codes": 1585425292893,
+		"c19_trk_us_states_acs_health_insurance_files": "2020-01-01T00:00:00Z",
+		"nytimes_us_counties": 1585425294166,
+		"c19_trk_us_population_counties_files": "2020-01-01T00:00:00Z",
+		"neherlab_population_files": "2020-01-01T00:00:00Z",
+		"jh_csse_daily": 1585425322477,
+		"eu_daily": 1585425391712,
+		"c19_trk_us_states_info": "2020-01-01T00:00:00Z",
+		"c19_trk_us_states_kff_hospital_beds": 1585425391252,
+		"c19_trk_us_states_kff_hospital_beds_files": "2020-01-01T00:00:00Z",
+		"nytimes_us_counties_files": "2020-01-01T00:00:00Z",
+		"c19_trk_us_states_acs_health_insurance": 1585425382387,
+		"c19_trk_us_population_states": 1585425497765,
+		"c19_trk_us_population_states_age_groups_files": "2020-01-01T00:00:00Z",
+		"c19_trk_us_population_counties": 1585425316615,
+		"neherlab_case_counts": 1585425220618
+    }
 }

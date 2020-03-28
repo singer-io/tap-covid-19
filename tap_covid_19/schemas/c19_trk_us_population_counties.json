@@ -1,34 +1,40 @@
 {
-  "type": "object",
+  "type": ["null", "object"],
   "additionalProperties": false,
   "properties": {
-    "name": {
+    "git_path": {
       "type": ["null", "string"]
     },
-    "path": {
+    "git_sha": {
       "type": ["null", "string"]
     },
-    "sha": {
+    "git_file_name": {
       "type": ["null", "string"]
     },
-    "last_modified": {
+    "git_last_modified": {
       "type": ["null", "string"],
       "format": "date-time"
     },
-    "node_id": {
-      "type": ["null", "string"]
-    },
-    "size": {
+    "row_number": {
       "type": ["null", "integer"]
     },
-    "url": {
+    "state": {
       "type": ["null", "string"]
     },
-    "html_url": {
+    "county": {
       "type": ["null", "string"]
     },
-    "encoding": {
+    "state_name": {
       "type": ["null", "string"]
-    }      
+    },
+    "geo_id": {
+      "type": ["null", "string"]
+    },
+    "population": {
+      "type": ["null", "integer"]
+    },
+    "pop_density": {
+      "type": ["null", "number"]
+    }
   }
 }

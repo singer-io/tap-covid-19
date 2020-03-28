@@ -4,7 +4,8 @@ config/
 virtualenvs/
 *catalog*.json
 *config*.json
-*state*.json
+state.json
+state_previous.json
 target*.json
 *.sublime-*
 .python-version

@@ -18,6 +18,24 @@ This tap:
       - [ita_national](https://github.com/pcm-dpc/COVID-19/tree/master/dati-andamento-nazionale)
       - [ita_provinces](https://github.com/pcm-dpc/COVID-19/tree/master/dati-province)
       - [ita_regions](https://github.com/pcm-dpc/COVID-19/tree/master/dati-regioni)
+    - [NY Times US Data](https://github.com/nytimes/covid-19-data)
+      - [nytimes_us_states](https://github.com/nytimes/covid-19-data/blob/master/us-states.csv)
+      - [nytimes_us_counties](https://github.com/nytimes/covid-19-data/blob/master/us-counties.csv)
+    - [Neherlab Scenarios Data](https://github.com/neherlab/covid19_scenarios_data) from [Neherlab Biozentrum, Center for Computaitonal Biology](https://neherlab.org/)
+      - [neherlab_case_counts](https://github.com/neherlab/covid19_scenarios_data/tree/master/case-counts)
+      - [neherlab_country_codes](https://github.com/neherlab/covid19_scenarios_data/blob/master/country_codes.csv)
+      - [neherlab_population](https://github.com/neherlab/covid19_scenarios_data/blob/master/populationData.tsv)
+    - [COVID-19 Tracking Project](https://github.com/COVID19Tracking)
+      - [c19_trk_us_daily](https://github.com/COVID19Tracking/covid-tracking-data/blob/master/data/us_daily.csv)
+      - [c19_trk_us_states_current](https://github.com/COVID19Tracking/covid-tracking-data/blob/master/data/states_current.csv)
+      - [c19_trk_us_states_daily](https://github.com/COVID19Tracking/covid-tracking-data/blob/master/data/states_daily_4pm_et.csv)
+      - [c19_trk_us_states_info](https://github.com/COVID19Tracking/covid-tracking-data/blob/master/data/states_info.csv)
+      - [c19_trk_us_population_states](https://github.com/COVID19Tracking/associated-data/blob/master/us_census_data/us_census_2018_population_estimates_states.csv)
+      - [c19_trk_us_population_states_age_groups](https://github.com/COVID19Tracking/associated-data/blob/master/us_census_data/us_census_2018_population_estimates_states_agegroups.csv)
+      - [c19_trk_us_population_counties](https://github.com/COVID19Tracking/associated-data/blob/master/us_census_data/us_census_2018_population_estimates_counties.csv)
+      - [c19_trk_us_states_acs_health_insurance](https://github.com/COVID19Tracking/associated-data/blob/master/acs_health_insurance/acs_2018_health_insurance_coverage_estimates.csv)
+      - [c19_trk_us_states_kff_hospital_beds (per 1000 population)](https://github.com/COVID19Tracking/associated-data/blob/master/kff_hospital_beds/kff_usa_hospital_beds_per_capita_2018.csv)
+        - [kff source](https://www.kff.org/other/state-indicator/beds-by-ownership/?currentTimeframe=0&sortModel=%7B%22colId%22:%22Location%22,%22sort%22:%22asc%22%7D)
 
 - Outputs the schema for each resource
 - Incrementally pulls data based on the input state (file last-modified in GitHub)
@@ -28,7 +46,7 @@ This tap:
 [jh_csse_daily_files](https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_daily_reports)
 - Repository: CSSEGISandData/COVID-19
 - Folder: csse_covid_19_data/csse_covid_19_daily_reports
-- Search Endpoint: https://api.github.com/search/code?q=path:csse_covid_19_data/csse_covid_19_daily_reports+extension:csv+repo:CSSEGISandData/COVID-19
+- Search Endpoint: https://api.github.com/search/code?q=path:csse_covid_19_data/csse_covid_19_daily_reports+extension:csv+repo:CSSEGISandData/COVID-19&sort=indexed&order=asc
 - File Endpoint: https://api.github.com/repos/CSSEGISandData/COVID-19/contents/[GIT_FILE_PATH]
 - Primary key fields: path
 - Replication strategy: INCREMENTAL (Search ALL, filter results)
@@ -39,6 +57,54 @@ This tap:
 - Primary key fields: date, row_number
 - Replication strategy: FULL_TABLE (ALL for each model_file)
 - Transformations: Decode, parse jh_daily_file content, cleanse location fields, and convert to JSON
+
+[eu_daily_files](https://github.com/covid19-eu-zh/covid19-eu-data/tree/master/dataset/daily)
+- Repository: covid19-eu-zh/covid19-eu-data
+- Folder: dataset/daily/
+- Search Endpoint: https://api.github.com/search/code?q=path:dataset/daily+extension:csv+repo:covid19-eu-zh/covid19-eu-data&sort=indexed&order=asc
+- File Endpoint: https://api.github.com/repos/covid19-eu-zh/covid19-eu-data/contents/[GIT_FILE_PATH]
+- Primary key fields: path
+- Replication strategy: INCREMENTAL (Search ALL, filter results)
+  - Bookmark field: last_modified
+- Transformations: Remove _links node, remove content node, add repository fields
+
+[eu_daily](https://github.com/covid19-eu-zh/covid19-eu-data/tree/master/dataset/daily)
+- Primary key fields: git_file_name, row_number
+- Replication strategy: FULL_TABLE (ALL for each model_file)
+- Transformations: Decode, parse eu_daily_file content, get date from table datetime, merge differing column sets, convert to JSON
+- Notes:
+    - source is one of {'country', 'ecdc'}
+    - datetime was chosen as a key because some countries have more than one file a single date
+
+[nytimes_us_states_files](https://github.com/nytimes/covid-19-data/blob/master/us-states.csv)
+- Repository: nytimes/covid-19-data
+- Folder: . (root folder)
+- Search Endpoint: https://api.github.com/search/code?q=filename:us-states+extension:csv+repo:nytimes/covid-19-data&sort=indexed&order=asc
+- File Endpoint: https://api.github.com/repos/nytimes/covid-19-data/contents/[GIT_FILE_PATH]
+- Primary key fields: path
+- Replication strategy: INCREMENTAL (Search ALL, filter results)
+  - Bookmark field: last_modified
+- Transformations: Remove _links node, remove content node, add repository fielda
+
+[nytimes_us_states](https://github.com/nytimes/covid-19-data/blob/master/us-states.csv)
+- Primary key fields: row_number
+- Replication strategy: FULL_TABLE (ALL for each model_file)
+- Transformations: Decode, parse us-states content and convert to JSON, lookup state_name
+
+[nytimes_us_counties_files](https://github.com/nytimes/covid-19-data/blob/master/us-counties.csv)
+- Repository: nytimes/covid-19-data
+- Folder: . (root folder)
+- Search Endpoint: https://api.github.com/search/code?q=filename:us-counties+extension:csv+repo:nytimes/covid-19-data&sort=indexed&order=asc
+- File Endpoint: https://api.github.com/repos/nytimes/covid-19-data/contents/[GIT_FILE_PATH]
+- Primary key fields: path
+- Replication strategy: INCREMENTAL (Search ALL, filter results)
+  - Bookmark field: last_modified
+- Transformations: Remove _links node, remove content node, add repository fielda
+
+[nytimes_us_counties](https://github.com/nytimes/covid-19-data/blob/master/us-counties.csv)
+- Primary key fields: row_number
+- Replication strategy: FULL_TABLE (ALL for each model_file)
+- Transformations: Decode, parse us-counties content and convert to JSON, lookup state_name
 
 
 ## Authentication
@@ -83,12 +149,44 @@ Even though this tap pulls from public GitHub repositories, API request limits a
 
     
     Optionally, also create a `state.json` file. `currently_syncing` is an optional attribute used for identifying the last object to be synced in case the job is interrupted mid-stream. The next run would begin where the last job left off.
+    The `...files` streams use a datetime bookmark based on the GitHub `last_modified` datetime of the file that is returned in the GET header response.
+    The `csv-data` streams us an integer bookmark based on the UNIX epoch time when the file batch was last sent. This is used with the `row_number` as a part of the Singer.io [Activate Version](https://github.com/singer-io/singer-python/blob/master/singer/messages.py#L137) logic to insert/update and delete the delta (when the new batch has fewer records).
 
     ```json
     {
-        "currently_syncing": "jh_csse_daily",
-        "bookmarks": {
-            "jh_csse_daily_files": "2019-10-13T19:53:36.000000Z"
+      "currently_syncing": "jh_csse_daily_files",
+      "bookmarks": {
+        "c19_trk_us_states_daily": 1585425314448,
+        "nytimes_us_states": 1585425318871,
+        "eu_daily_files": "2020-01-01T00:00:00Z",
+        "c19_trk_us_daily_files": "2020-01-01T00:00:00Z",
+        "neherlab_country_codes_files": "2020-01-01T00:00:00Z",
+        "neherlab_population": 1585425494713,
+        "nytimes_us_states_files": "2020-01-01T00:00:00Z",
+        "c19_trk_us_states_current": 1585425314001,
+        "c19_trk_us_population_states_files": "2020-01-01T00:00:00Z",
+        "c19_trk_us_population_states_age_groups": 1585425300888,
+        "c19_trk_us_states_current_files": "2020-01-01T00:00:00Z",
+        "jh_csse_daily_files": "2020-01-01T00:00:00Z",
+        "c19_trk_us_daily": 1585425316108,
+        "neherlab_case_counts_files": "2020-01-01T00:00:00Z",
+        "c19_trk_us_states_daily_files": "2020-01-01T00:00:00Z",
+        "neherlab_country_codes": 1585425292893,
+        "c19_trk_us_states_acs_health_insurance_files": "2020-01-01T00:00:00Z",
+        "nytimes_us_counties": 1585425294166,
+        "c19_trk_us_population_counties_files": "2020-01-01T00:00:00Z",
+        "neherlab_population_files": "2020-01-01T00:00:00Z",
+        "jh_csse_daily": 1585425322477,
+        "eu_daily": 1585425391712,
+        "c19_trk_us_states_info": "2020-01-01T00:00:00Z",
+        "c19_trk_us_states_kff_hospital_beds": 1585425391252,
+        "c19_trk_us_states_kff_hospital_beds_files": "2020-01-01T00:00:00Z",
+        "nytimes_us_counties_files": "2020-01-01T00:00:00Z",
+        "c19_trk_us_states_acs_health_insurance": 1585425382387,
+        "c19_trk_us_population_states": 1585425497765,
+        "c19_trk_us_population_states_age_groups_files": "2020-01-01T00:00:00Z",
+        "c19_trk_us_population_counties": 1585425316615,
+        "neherlab_case_counts": 1585425220618
         }
     }
     ```
@@ -138,20 +236,50 @@ Even though this tap pulls from public GitHub repositories, API request limits a
     ```
     Check tap resulted in the following:
     ```bash
+    Checking stdin for valid Singer-formatted data
     The output is valid.
-    It contained 14826 messages for 2 streams.
+    It contained 85206 messages for 31 streams.
 
-        2 schema messages
-    14821 record messages
-        3 state messages
+        32 schema messages
+      85091 record messages
+        83 state messages
 
     Details by stream:
-    +---------------------+---------+---------+
-    | stream              | records | schemas |
-    +---------------------+---------+---------+
-    | jh_csse_daily       | 14758   | 1       |
-    | jh_csse_daily_files | 63      | 1       |
-    +---------------------+---------+---------+
+    +-----------------------------------------------+---------+---------+
+    | stream                                        | records | schemas |
+    +-----------------------------------------------+---------+---------+
+    | c19_trk_us_population_states_age_groups_files | 1       | 1       |
+    | c19_trk_us_states_daily                       | 1205    | 1       |
+    | neherlab_country_codes_files                  | 1       | 1       |
+    | neherlab_population                           | 237     | 1       |
+    | neherlab_case_counts                          | 13006   | 1       |
+    | c19_trk_us_states_current_files               | 1       | 1       |
+    | jh_csse_daily_files                           | 66      | 1       |
+    | c19_trk_us_states_info                        | 57      | 2       |
+    | c19_trk_us_states_daily_files                 | 1       | 1       |
+    | c19_trk_us_states_acs_health_insurance        | 1768    | 1       |
+    | nytimes_us_counties_files                     | 1       | 1       |
+    | neherlab_case_counts_files                    | 270     | 1       |
+    | c19_trk_us_states_current                     | 56      | 1       |
+    | c19_trk_us_daily                              | 24      | 1       |
+    | c19_trk_us_daily_files                        | 1       | 1       |
+    | c19_trk_us_population_states_files            | 2       | 1       |
+    | neherlab_country_codes                        | 250     | 1       |
+    | c19_trk_us_population_counties                | 3220    | 1       |
+    | eu_daily                                      | 17288   | 1       |
+    | c19_trk_us_states_acs_health_insurance_files  | 1       | 1       |
+    | nytimes_us_states_files                       | 1       | 1       |
+    | c19_trk_us_population_counties_files          | 1       | 1       |
+    | c19_trk_us_population_states                  | 988     | 1       |
+    | eu_daily_files                                | 298     | 1       |
+    | nytimes_us_counties                           | 15836   | 1       |
+    | c19_trk_us_states_kff_hospital_beds           | 51      | 1       |
+    | c19_trk_us_population_states_age_groups       | 936     | 1       |
+    | nytimes_us_states                             | 1386    | 1       |
+    | jh_csse_daily                                 | 28136   | 1       |
+    | neherlab_population_files                     | 1       | 1       |
+    | c19_trk_us_states_kff_hospital_beds_files     | 1       | 1       |
+    +-----------------------------------------------+---------+---------+
 
 
     ```

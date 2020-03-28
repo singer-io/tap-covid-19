@@ -1,0 +1,35 @@
+{
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "name": {
+        "type": ["null", "string"]
+      },
+      "path": {
+        "type": ["null", "string"]
+      },
+      "sha": {
+        "type": ["null", "string"]
+      },
+      "last_modified": {
+        "type": ["null", "string"],
+        "format": "date-time"
+      },
+      "node_id": {
+        "type": ["null", "string"]
+      },
+      "size": {
+        "type": ["null", "integer"]
+      },
+      "url": {
+        "type": ["null", "string"]
+      },
+      "html_url": {
+        "type": ["null", "string"]
+      },
+      "encoding": {
+        "type": ["null", "string"]
+      }      
+    }
+  }
+  
