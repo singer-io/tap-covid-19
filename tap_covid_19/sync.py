@@ -246,7 +246,7 @@ def sync_endpoint(client, #pylint: disable=too-many-branches
                     url=commits_url,
                     endpoint='{}_commits'.format(stream_name))
 
-                file_data['git_ropository'] = git_repository
+                file_data['git_repository'] = git_repository
                 file_data['git_owner'] = git_owner
                 file_data['path'] = file_path
                 file_data['name'] = file_name
