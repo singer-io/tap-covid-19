@@ -31,6 +31,12 @@
 		"c19_trk_us_population_states": 1585425497765,
 		"c19_trk_us_population_states_age_groups_files": "2020-01-01T00:00:00Z",
 		"c19_trk_us_population_counties": 1585425316615,
-		"neherlab_case_counts": 1585425220618
+		"neherlab_case_counts": 1585425220618,
+		"italy_regional_daily_files": "2020-01-01T00:00:00Z",
+		"italy_provincial_daily_files": "2020-01-01T00:00:00Z",
+		"italy_national_daily": 1585502945880,
+		"italy_national_daily_files": "2020-01-01T00:00:00Z",
+		"italy_provincial_daily": 1585502961082,
+		"italy_regional_daily": 1585502952425
     }
 }

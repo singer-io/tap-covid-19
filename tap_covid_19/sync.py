@@ -185,7 +185,7 @@ def sync_endpoint(client, #pylint: disable=too-many-branches
 
         # API request search_data
         search_data = {}
-        search_data, next_url = client.get(
+        search_data, next_url, search_last_modified = client.get(
             url=next_url,
             endpoint=stream_name)
         LOGGER.info('next_url = {}'.format(next_url))
@@ -203,8 +203,11 @@ def sync_endpoint(client, #pylint: disable=too-many-branches
         csv_records = []
         for item in search_items:
             file_count = file_count + 1
-            # git_url (blob url) is preferable to url (content url)
-            # git_url allows for up to 100 MB files; url allows for up to 1 MB files
+            # url (content url) is preferable to git_url (blob url) b/c it provides
+            #   last-modified header for bookmark
+            # However, git_url allows for up to 100 MB files; url allows for up to 1 MB files
+            # Therefore, we use the git_url (blob) endpoint
+            # And make another call to the commits endpoint to get last-modified
             file_url = item.get('git_url')
             LOGGER.info('File URL for Stream {}: {}'.format(stream_name, file_url))
             file_data = {}
@@ -212,7 +215,7 @@ def sync_endpoint(client, #pylint: disable=too-many-branches
             if bookmark_query_field:
                 headers[bookmark_query_field] = last_modified
             # API request file_data for item, single-file (ignore file_next_url)
-            file_data, file_next_url = client.get(
+            file_data, file_next_url, file_last_modified = client.get(
                 url=file_url,
                 headers=headers,
                 endpoint=stream_name)
@@ -229,15 +232,26 @@ def sync_endpoint(client, #pylint: disable=too-many-branches
                     reader = csv.DictReader(content_array_sliced, delimiter=csv_delimiter)
                     content_list = [r for r in reader]
 
-                file_modified = file_data.get('last_modified')
-                file_sha = file_data.get('sha')
+                git_repository = item.get('repository', {}).get('name')
+                git_owner = item.get('repository', {}).get('owner', {}).get('login')
                 file_path = item.get('path')
+                file_sha = file_data.get('sha')
                 file_name = item.get('name')
                 file_html_url = item.get('html_url')
                 
+                commits_url = 'https://api.github.com/repos/{}/{}/commits?path={}'.format(
+                    git_owner, git_repository, file_path)
+                # API request commits_data for single-file
+                commits_data, commits_next_url, commit_last_modified = client.get(
+                    url=commits_url,
+                    endpoint='{}_commits'.format(stream_name))
+
+                file_data['git_ropository'] = git_repository
+                file_data['git_owner'] = git_owner
                 file_data['path'] = file_path
                 file_data['name'] = file_name
                 file_data['html_url'] = file_html_url
+                file_data['last_modified'] = commit_last_modified
 
                 # Remove content nodes
                 file_data.pop('content', None)
@@ -253,7 +267,7 @@ def sync_endpoint(client, #pylint: disable=too-many-branches
                             for record in content_list:
                                 record['git_path'] = file_path
                                 record['git_sha'] = file_sha
-                                record['git_last_modified'] = file_modified
+                                record['git_last_modified'] = commit_last_modified
                                 record['git_file_name'] = file_name
                                 record['row_number'] = i
 

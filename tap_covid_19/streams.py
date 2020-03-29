@@ -165,6 +165,54 @@ STREAMS = {
             },
         },
     },
+    # Dati COVID-19 Italia (COVID-19 data Italy)
+    # Reference: https://github.com/pcm-dpc/COVID-19
+    'italy_national_daily_files': {
+        'search_path': 'search/code?q=path:dati-andamento-nazionale+extension:csv+repo:pcm-dpc/COVID-19&sort=indexed&order=asc',
+        'data_key': 'items',
+        'key_properties': ['path'],
+        'replication_method': 'INCREMENTAL',
+        'replication_keys': ['last_modified'],
+        'bookmark_query_field': 'If-Modified-Since',
+        'children': {
+            'italy_national_daily': {
+                'key_properties': ['date', 'row_number'],
+                'replication_method': 'FULL_TABLE'
+            }
+        }
+    },
+    # Dati COVID-19 Italia (COVID-19 data Italy)
+    # Reference: https://github.com/pcm-dpc/COVID-19
+    'italy_regional_daily_files': {
+        'search_path': 'search/code?q=path:dati-regioni+extension:csv+repo:pcm-dpc/COVID-19&sort=indexed&order=asc',
+        'data_key': 'items',
+        'key_properties': ['path'],
+        'replication_method': 'INCREMENTAL',
+        'replication_keys': ['last_modified'],
+        'bookmark_query_field': 'If-Modified-Since',
+        'children': {
+            'italy_regional_daily': {
+                'key_properties': ['date', 'row_number'],
+                'replication_method': 'FULL_TABLE'
+            }
+        }
+    },
+    # Dati COVID-19 Italia (COVID-19 data Italy)
+    # Reference: https://github.com/pcm-dpc/COVID-19
+    'italy_provincial_daily_files': {
+        'search_path': 'search/code?q=path:dati-province+extension:csv+repo:pcm-dpc/COVID-19&sort=indexed&order=asc',
+        'data_key': 'items',
+        'key_properties': ['path'],
+        'replication_method': 'INCREMENTAL',
+        'replication_keys': ['last_modified'],
+        'bookmark_query_field': 'If-Modified-Since',
+        'children': {
+            'italy_provincial_daily': {
+                'key_properties': ['date', 'row_number'],
+                'replication_method': 'FULL_TABLE'
+            }
+        }
+    },
     # Reference: https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_daily_reports
     'jh_csse_daily_files': {
         'search_path': 'search/code?q=path:csse_covid_19_data/csse_covid_19_daily_reports+extension:csv+repo:CSSEGISandData/COVID-19&sort=indexed&order=asc',
