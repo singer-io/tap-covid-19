@@ -34,60 +34,51 @@
       "type": ["null", "string"],
       "format": "date"
     },
-    "datetime": {
+    "states": {
+      "type": ["null", "integer"]
+    },
+    "positive": {
+      "type": ["null", "integer"]
+    },
+    "negative": {
+      "type": ["null", "integer"]
+    },
+    "pos_neg": {
+      "type": ["null", "integer"]
+    },
+    "pending": {
+      "type": ["null", "integer"]
+    },
+    "hospitalized": {
+      "type": ["null", "integer"]
+    },
+    "death": {
+      "type": ["null", "integer"]
+    },
+    "total": {
+      "type": ["null", "integer"]
+    },
+    "date_checked": {
       "type": ["null", "string"],
       "format": "date-time"
     },
-    "province_state": {
-      "type": ["null", "string"]
-    },
-    "province_state_cleansed": {
-      "type": ["null", "string"]
-    },
-    "country_region": {
-      "type": ["null", "string"]
-    },
-    "country_region_cleansed": {
-      "type": ["null", "string"]
-    },
-    "last_update": {
-      "type": ["null", "string"],
-      "format": "date-time"
-    },
-    "confirmed": {
+    "total_test_results": {
       "type": ["null", "integer"]
     },
-    "deaths": {
+    "death_increase": {
       "type": ["null", "integer"]
     },
-    "recovered": {
+    "hospitalized_increase": {
       "type": ["null", "integer"]
     },
-    "latitude": {
-      "type": ["null", "number"],
-      "multipleOf": 1e-10
-    },
-    "longitude": {
-      "type": ["null", "number"],
-      "multipleOf": 1e-10
-    },
-    "active": {
+    "negative_increase": {
       "type": ["null", "integer"]
     },
-    "combined_key": {
-      "type": ["null", "string"]
+    "positive_increase": {
+      "type": ["null", "integer"]
     },
-    "fips": {
-      "type": ["null", "string"]
-    },
-    "admin_area": {
-      "type": ["null", "string"]
-    },
-    "county": {
-      "type": ["null", "string"]
-    },
-    "is_a_cruise": {
-      "type": ["null", "boolean"]
+    "total_test_results_increase": {
+      "type": ["null", "integer"]
     }
   }
 }

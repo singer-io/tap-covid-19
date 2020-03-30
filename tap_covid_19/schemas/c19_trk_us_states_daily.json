@@ -34,60 +34,51 @@
       "type": ["null", "string"],
       "format": "date"
     },
-    "datetime": {
+    "state": {
+      "type": ["null", "string"]
+    },
+    "positive": {
+      "type": ["null", "integer"]
+    },
+    "negative": {
+      "type": ["null", "integer"]
+    },
+    "pending": {
+      "type": ["null", "integer"]
+    },
+    "hospitalized": {
+      "type": ["null", "integer"]
+    },
+    "death": {
+      "type": ["null", "integer"]
+    },
+    "total": {
+      "type": ["null", "integer"]
+    },
+    "date_checked": {
       "type": ["null", "string"],
       "format": "date-time"
     },
-    "province_state": {
-      "type": ["null", "string"]
-    },
-    "province_state_cleansed": {
-      "type": ["null", "string"]
-    },
-    "country_region": {
-      "type": ["null", "string"]
-    },
-    "country_region_cleansed": {
-      "type": ["null", "string"]
-    },
-    "last_update": {
-      "type": ["null", "string"],
-      "format": "date-time"
-    },
-    "confirmed": {
+    "total_test_results": {
       "type": ["null", "integer"]
-    },
-    "deaths": {
-      "type": ["null", "integer"]
-    },
-    "recovered": {
-      "type": ["null", "integer"]
-    },
-    "latitude": {
-      "type": ["null", "number"],
-      "multipleOf": 1e-10
-    },
-    "longitude": {
-      "type": ["null", "number"],
-      "multipleOf": 1e-10
-    },
-    "active": {
-      "type": ["null", "integer"]
-    },
-    "combined_key": {
-      "type": ["null", "string"]
     },
     "fips": {
       "type": ["null", "string"]
     },
-    "admin_area": {
-      "type": ["null", "string"]
+    "death_increase": {
+      "type": ["null", "integer"]
     },
-    "county": {
-      "type": ["null", "string"]
+    "hospitalized_increase": {
+      "type": ["null", "integer"]
     },
-    "is_a_cruise": {
-      "type": ["null", "boolean"]
+    "negative_increase": {
+      "type": ["null", "integer"]
+    },
+    "positive_increase": {
+      "type": ["null", "integer"]
+    },
+    "total_test_results_increase": {
+      "type": ["null", "integer"]
     }
   }
 }

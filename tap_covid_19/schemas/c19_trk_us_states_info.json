@@ -30,64 +30,35 @@
     "row_number": {
       "type": ["null", "integer"]
     },
-    "date": {
-      "type": ["null", "string"],
-      "format": "date"
-    },
-    "datetime": {
-      "type": ["null", "string"],
-      "format": "date-time"
-    },
-    "province_state": {
+    "state": {
       "type": ["null", "string"]
     },
-    "province_state_cleansed": {
+    "covid_19_site_old": {
       "type": ["null", "string"]
     },
-    "country_region": {
+    "covid_19_site": {
       "type": ["null", "string"]
     },
-    "country_region_cleansed": {
+    "covid_19_site_secondary": {
       "type": ["null", "string"]
     },
-    "last_update": {
-      "type": ["null", "string"],
-      "format": "date-time"
+    "twitter": {
+      "type": ["null", "string"]
     },
-    "confirmed": {
-      "type": ["null", "integer"]
+    "pui": {
+      "type": ["null", "string"]
     },
-    "deaths": {
-      "type": ["null", "integer"]
+    "pum": {
+      "type": ["null", "string"]
     },
-    "recovered": {
-      "type": ["null", "integer"]
-    },
-    "latitude": {
-      "type": ["null", "number"],
-      "multipleOf": 1e-10
-    },
-    "longitude": {
-      "type": ["null", "number"],
-      "multipleOf": 1e-10
-    },
-    "active": {
-      "type": ["null", "integer"]
-    },
-    "combined_key": {
+    "notes": {
       "type": ["null", "string"]
     },
     "fips": {
       "type": ["null", "string"]
     },
-    "admin_area": {
+    "name": {
       "type": ["null", "string"]
-    },
-    "county": {
-      "type": ["null", "string"]
-    },
-    "is_a_cruise": {
-      "type": ["null", "boolean"]
     }
   }
 }

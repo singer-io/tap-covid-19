@@ -2,9 +2,13 @@
 import base64
 import io
 import csv
+import time
+from datetime import datetime
+import pytz
 import singer
 from singer import metrics, metadata, Transformer, utils
 from singer.utils import strptime_to_utc
+from singer.messages import RecordMessage
 from tap_covid_19.streams import STREAMS
 from tap_covid_19.transform import transform_record
 
@@ -17,16 +21,27 @@ def write_schema(catalog, stream_name):
     try:
         singer.write_schema(stream_name, schema, stream.key_properties)
     except OSError as err:
-        LOGGER.info('OS Error writing schema for: {}'.format(stream_name))
+        LOGGER.error('OS Error writing schema for: {}'.format(stream_name))
         raise err
 
 
-def write_record(stream_name, record, time_extracted):
+def write_record(stream_name, record, time_extracted, version=None):
     try:
-        singer.messages.write_record(stream_name, record, time_extracted=time_extracted)
+        if version:
+            singer.messages.write_message(
+                RecordMessage(
+                    stream=stream_name,
+                    record=record,
+                    version=version,
+                    time_extracted=time_extracted))
+        else:
+            singer.messages.write_record(
+                stream_name=stream_name,
+                record=record,
+                time_extracted=time_extracted)
     except OSError as err:
-        LOGGER.info('OS Error writing record for: {}'.format(stream_name))
-        LOGGER.info('record: {}'.format(record))
+        LOGGER.error('OS Error writing record for: {}'.format(stream_name))
+        LOGGER.error('record: {}'.format(record))
         raise err
 
 
@@ -60,7 +75,8 @@ def process_records(catalog, #pylint: disable=too-many-branches
                     time_extracted,
                     bookmark_field=None,
                     max_bookmark_value=None,
-                    last_datetime=None):
+                    last_datetime=None,
+                    version=None):
     stream = catalog.get_stream(stream_name)
     schema = stream.schema.to_dict()
     stream_metadata = metadata.to_map(stream.metadata)
@@ -69,8 +85,13 @@ def process_records(catalog, #pylint: disable=too-many-branches
         for record in records:
             # Transform record for Singer.io
             with Transformer() as transformer:
-                transformed_record = transformer.transform(
-                    record, schema, stream_metadata)
+                try:
+                    transformed_record = transformer.transform(
+                        record, schema, stream_metadata)
+                except Exception as err:
+                    LOGGER.error('Transformer error: {}, Strean: {}'.format(err, stream_name))
+                    LOGGER.error('record: {}'.format(record))
+                    raise err
 
                 # LOGGER.info('transformed_record: {}'.format(transformed_record)) # COMMENT OUT
                 if bookmark_field and (bookmark_field in transformed_record):
@@ -82,10 +103,18 @@ def process_records(catalog, #pylint: disable=too-many-branches
                         max_bookmark_value = transformed_record[bookmark_field]
                     # Keep only records whose bookmark is after the last_datetime
                     if bookmark_dttm >= last_dttm:
-                        write_record(stream_name, transformed_record, time_extracted=time_extracted)
+                        write_record(
+                            stream_name,
+                            transformed_record,
+                            time_extracted=time_extracted,
+                            version=version)
                         counter.increment()
                 else:
-                    write_record(stream_name, transformed_record, time_extracted=time_extracted)
+                    write_record(
+                        stream_name,
+                        transformed_record,
+                        time_extracted=time_extracted,
+                        version=version)
                     counter.increment()
 
         return max_bookmark_value, counter.value
@@ -105,35 +134,47 @@ def sync_endpoint(client, #pylint: disable=too-many-branches
     # Endpoint parameters
     bookmark_query_field = endpoint_config.get('bookmark_query_field', None)
     data_key = endpoint_config.get('data_key', stream_name)
-    LOGGER.info('data_key = {}'.format(data_key))
+    csv_delimiter = endpoint_config.get('csv_delimiter', ',')
+    skip_header_rows = endpoint_config.get('skip_header_rows', 0)
+    # LOGGER.info('data_key = {}'.format(data_key))
 
     # Get the latest bookmark for the stream and set the last_datetime
     last_datetime = get_bookmark(state, stream_name, start_date)
-    file_max_bookmark_value = last_datetime
+    last_dttm = strptime_to_utc(last_datetime)
+    max_bookmark_value = last_datetime
+    timezone = pytz.timezone('UTC')
+    last_epoch = int((last_dttm - timezone.localize(datetime(1970, 1, 1))).total_seconds())
 
     # Convert to GitHub date format, example: Sun, 13 Oct 2019 22:40:01 GMT
-    last_dttm = strptime_to_utc(last_datetime)
     last_modified = last_dttm.strftime("%a, %d %b %Y %H:%M:%S %Z'")
     LOGGER.info('HEADER If-Modified-Since: {}'.format(last_modified))
 
-    # Write schema and log selected fields for file stream and child csv stream(s)
+    # Write schema and log selected fields for stream
     write_schema(catalog, stream_name)
     selected_fields = get_selected_fields(catalog, stream_name)
     LOGGER.info('Stream: {}, selected_fields: {}'.format(stream_name, selected_fields))
-    children = endpoint_config.get('children')
-    if children:
-        for child_stream_name, child_endpoint_config in children.items():
-            if child_stream_name in selected_streams:
-                write_schema(catalog, child_stream_name)
-                child_selected_fields = get_selected_fields(catalog, child_stream_name)
-                LOGGER.info('Stream: {}, selected_fields: {}'.format(
-                    child_stream_name, child_selected_fields))
+    
+    # Emit a Singer ACTIVATE_VERSION message before initial sync (but not subsequent syncs)
+    # everytime after each sheet sync is complete.
+    # This forces hard deletes on the data downstream if fewer records are sent.
+    # https://github.com/singer-io/singer-python/blob/master/singer/messages.py#L137
+    if last_datetime == start_date:
+        activate_version = 0
+    else:
+        activate_version = last_epoch
+    activate_version_message = singer.ActivateVersionMessage(
+            stream=stream_name,
+            version=activate_version)
+    if last_datetime == start_date:
+        # initial load, send activate_version before AND after data sync
+        singer.write_message(activate_version_message)
+        LOGGER.info('INITIAL SYNC, Stream: {}, Activate Version: {}'.format(stream_name, activate_version))
 
     # pagination: loop thru all pages of data using next_url (if not None)
     page = 1
     offset = 0
-    file_total_records = 0
-    csv_total_records = 0
+    file_count = 0
+    total_records = 0
     next_url = '{}/{}'.format(client.base_url, search_path)
 
     i = 1
@@ -142,7 +183,7 @@ def sync_endpoint(client, #pylint: disable=too-many-branches
 
         # API request search_data
         search_data = {}
-        search_data, next_url = client.get(
+        search_data, next_url, search_last_modified = client.get(
             url=next_url,
             endpoint=stream_name)
         LOGGER.info('next_url = {}'.format(next_url))
@@ -156,94 +197,100 @@ def sync_endpoint(client, #pylint: disable=too-many-branches
             break # No data results
 
         file_count = 0
-        file_records = []
-        csv_records = []
         for item in search_items:
+            csv_records = []
             file_count = file_count + 1
-            file_url = item.get('url')
+            # url (content url) is preferable to git_url (blob url) b/c it provides
+            #   last-modified header for bookmark
+            # However, git_url allows for up to 100 MB files; url allows for up to 1 MB files
+            # Therefore, we use the git_url (blob) endpoint
+            # And make another call to the commits endpoint to get last-modified
+            file_url = item.get('git_url')
             LOGGER.info('File URL for Stream {}: {}'.format(stream_name, file_url))
             file_data = {}
             headers = {}
             if bookmark_query_field:
                 headers[bookmark_query_field] = last_modified
+
             # API request file_data for item, single-file (ignore file_next_url)
-            file_data, file_next_url = client.get(
+            file_data, file_next_url, file_last_modified = client.get(
                 url=file_url,
                 headers=headers,
                 endpoint=stream_name)
             # LOGGER.info('file_data: {}'.format(file_data)) # TESTING ONLY - COMMENT OUT
 
             if file_data:
+                # Read, decode, and parse content blob to json
                 content = file_data.get('content')
                 content_list = []
                 if content:
                     content_b64 = base64.b64decode(content)
                     content_str = content_b64.decode('utf-8')
-                    file_like_object = io.StringIO(content_str)
-                    
-                    with file_like_object as f:
-                        reader = csv.DictReader(f)
-                        content_list = [r for r in reader]
+                    content_array = content_str.splitlines()
+                    content_array_sliced = content_array[skip_header_rows:]
+                    reader = csv.DictReader(content_array_sliced, delimiter=csv_delimiter)
+                    content_list = [r for r in reader]
 
-                file_modified = file_data.get('last_modified')
+                git_repository = item.get('repository', {}).get('name')
+                git_owner = item.get('repository', {}).get('owner', {}).get('login')
+                file_path = item.get('path')
                 file_sha = file_data.get('sha')
-                file_path = file_data.get('path')
-                file_name = file_data.get('name')
+                file_name = item.get('name')
+                file_html_url = item.get('html_url')
 
-                # Remove _links, content nodes
-                file_data.pop('_links', None)
-                file_data.pop('content', None)
+                LOGGER.info('Retrieved file_name: {}'.format(file_name))
+
+                # API request commits_data for single-file, to get file last_modified
+                commits_url = '{}/repos/{}/{}/commits?path={}'.format(
+                    client.base_url, git_owner, git_repository, file_path)
+                commits_data, commits_next_url, commit_last_modified = client.get(
+                    url=commits_url,
+                    endpoint='{}_commits'.format(stream_name))
 
                 # LOGGER.info('file_data: {}'.format(file_data)) # TESTING ONLY - COMMENT OUT
-                file_records.append(file_data)
 
-                # Loop thru each child object and append csv records
-                if children:
-                    for child_stream_name, child_endpoint_config in children.items():
-                        if child_stream_name in selected_streams:
-                            i = 1
-                            for record in content_list:
-                                record['git_path'] = file_path
-                                record['git_sha'] = file_sha
-                                record['git_last_modified'] = file_modified
-                                record['git_file_name'] = file_name
-                                record['row_number'] = i
+                # Loop thru and append csv records
+                i = 1
+                for record in content_list:
+                    record['git_owner'] = git_owner
+                    record['git_repository'] = git_repository
+                    record['git_url'] = file_url
+                    record['git_html_url'] = file_html_url
+                    record['git_path'] = file_path
+                    record['git_sha'] = file_sha
+                    record['git_file_name'] = file_name
+                    record['git_last_modified'] = commit_last_modified
+                    record['row_number'] = i
 
-                                # Transform record and append
-                                transformed_csv_record = {}
-                                transformed_csv_record = transform_record(child_stream_name, record)
-                                csv_records.append(transformed_csv_record)
+                    # Transform record and append
+                    transformed_csv_record = {}
+                    try:
+                        transformed_csv_record = transform_record(stream_name, record)
+                    except Exception as err:
+                        LOGGER.error('Transform Record error: {}, Strean: {}'.format(err, stream_name))
+                        LOGGER.error('record: {}'.format(record))
+                        raise err
 
-                                i = i + 1
+                    # Bad records and totals
+                    if transformed_csv_record is None:
+                        continue
 
-        # Process file_records and get the max_bookmark_value and record_count
-        file_max_bookmark_value, file_record_count = process_records(
-            catalog=catalog,
-            stream_name=stream_name,
-            records=file_records,
-            time_extracted=time_extracted,
-            bookmark_field=bookmark_field,
-            max_bookmark_value=file_max_bookmark_value,
-            last_datetime=last_datetime)
-        LOGGER.info('Stream {}, batch processed {} records'.format(
-            stream_name, file_record_count))
-        file_total_records = file_total_records + file_record_count
+                    csv_records.append(transformed_csv_record)
+                    i = i + 1
+                # End If file_data
 
-        # Loop thru each child object to process csv records
-        if children:
-            for child_stream_name, child_endpoint_config in children.items():
-                if child_stream_name in selected_streams:
-                    csv_max_bookmark_value, csv_record_count = process_records(
-                        catalog=catalog,
-                        stream_name=child_stream_name,
-                        records=csv_records,
-                        time_extracted=time_extracted,
-                        bookmark_field=None,
-                        max_bookmark_value=None,
-                        last_datetime=last_datetime)
-                    LOGGER.info('Stream {}, batch processed {} records'.format(
-                        child_stream_name, csv_record_count))
-                    csv_total_records = csv_total_records + csv_record_count
+            max_bookmark_value, record_count = process_records(
+                catalog=catalog,
+                stream_name=stream_name,
+                records=csv_records,
+                time_extracted=time_extracted,
+                bookmark_field=bookmark_field,
+                max_bookmark_value=max_bookmark_value,
+                last_datetime=last_datetime,
+                version=activate_version)
+            LOGGER.info('Stream {}, batch processed {} records'.format(
+                stream_name, record_count))
+            total_records = total_records + record_count
 
         # to_rec: to record; ending record for the batch page
         to_rec = offset + file_count
@@ -257,17 +304,18 @@ def sync_endpoint(client, #pylint: disable=too-many-branches
         page = page + 1
         i = i + 1
 
-    # Update the state with the max_bookmark_value for the stream
-    if bookmark_field:
-        write_bookmark(state, stream_name, file_max_bookmark_value)
+    # End of Stream: Send Activate Version and update State
+    singer.write_message(activate_version_message)
+    write_bookmark(state, stream_name, max_bookmark_value)
+    # End for item in search_items
 
     # Return total_records across all pages
-    LOGGER.info('Synced Stream: {}, TOTAL pages: {}, file records: {}, csv records: {}'.format(
+    LOGGER.info('Synced Stream: {}, TOTAL pages: {}, file count: {}, total records: {}'.format(
         stream_name,
         page - 1,
-        file_total_records,
-        csv_total_records))
-    return file_total_records
+        file_count,
+        total_records))
+    return total_records
 
 
 # Currently syncing sets the stream currently being delivered in the state.

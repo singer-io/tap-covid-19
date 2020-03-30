@@ -198,12 +198,13 @@ class GitClient(object):
             raise_for_error(response)
 
         last_modified = response.headers.get('Last-Modified')
+        last_modified_str = None
 
         response_json = response.json()
         # last-modified: https://developer.github.com/v3/#conditional-requests
         if last_modified:
             last_modified_dttm = datetime.strptime(last_modified, '%a, %d %b %Y %H:%M:%S %Z')
-            response_json['last_modified'] = last_modified_dttm.strftime("%Y-%m-%dT%H:%M:%SZ")
+            last_modified_str = last_modified_dttm.strftime("%Y-%m-%dT%H:%M:%SZ")
 
         # Pagination: https://developer.github.com/v3/guides/traversing-with-pagination/
         links_header = response.headers.get('Link')
@@ -219,7 +220,7 @@ class GitClient(object):
             except AttributeError:
                 next_url = None
 
-        return response_json, next_url
+        return response_json, next_url, last_modified_str
 
     def get(self, url=None, path=None, headers=None, **kwargs):
         return self.request('GET', url=url, path=path, headers=headers, **kwargs)

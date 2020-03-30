@@ -30,64 +30,44 @@
     "row_number": {
       "type": ["null", "integer"]
     },
-    "date": {
-      "type": ["null", "string"],
-      "format": "date"
-    },
-    "datetime": {
-      "type": ["null", "string"],
-      "format": "date-time"
-    },
-    "province_state": {
+    "geo_id": {
       "type": ["null", "string"]
     },
-    "province_state_cleansed": {
+    "state": {
       "type": ["null", "string"]
     },
-    "country_region": {
+    "state_name": {
       "type": ["null", "string"]
     },
-    "country_region_cleansed": {
+    "acs_variable": {
       "type": ["null", "string"]
     },
-    "last_update": {
-      "type": ["null", "string"],
-      "format": "date-time"
+    "estimate": {
+      "type": ["null", "number"]
     },
-    "confirmed": {
-      "type": ["null", "integer"]
+    "margin_of_error": {
+      "type": ["null", "number"]
     },
-    "deaths": {
-      "type": ["null", "integer"]
-    },
-    "recovered": {
-      "type": ["null", "integer"]
-    },
-    "latitude": {
-      "type": ["null", "number"],
-      "multipleOf": 1e-10
-    },
-    "longitude": {
-      "type": ["null", "number"],
-      "multipleOf": 1e-10
-    },
-    "active": {
-      "type": ["null", "integer"]
-    },
-    "combined_key": {
+    "label": {
       "type": ["null", "string"]
     },
-    "fips": {
+    "concept": {
       "type": ["null", "string"]
     },
-    "admin_area": {
+    "estimate_type": {
       "type": ["null", "string"]
     },
-    "county": {
+    "coverage_type": {
       "type": ["null", "string"]
     },
-    "is_a_cruise": {
-      "type": ["null", "boolean"]
+    "age_group": {
+      "type": ["null", "string"]
+    },
+    "labor_force": {
+      "type": ["null", "string"]
+    },
+    "employed": {
+      "type": ["null", "string"]
     }
   }
 }

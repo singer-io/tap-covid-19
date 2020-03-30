@@ -30,64 +30,64 @@
     "row_number": {
       "type": ["null", "integer"]
     },
-    "date": {
-      "type": ["null", "string"],
-      "format": "date"
-    },
-    "datetime": {
-      "type": ["null", "string"],
-      "format": "date-time"
-    },
-    "province_state": {
+    "state": {
       "type": ["null", "string"]
     },
-    "province_state_cleansed": {
-      "type": ["null", "string"]
-    },
-    "country_region": {
-      "type": ["null", "string"]
-    },
-    "country_region_cleansed": {
-      "type": ["null", "string"]
-    },
-    "last_update": {
-      "type": ["null", "string"],
-      "format": "date-time"
-    },
-    "confirmed": {
+    "positive": {
       "type": ["null", "integer"]
     },
-    "deaths": {
+    "positive_score": {
       "type": ["null", "integer"]
     },
-    "recovered": {
+    "negative_regular_score": {
       "type": ["null", "integer"]
     },
-    "latitude": {
-      "type": ["null", "number"],
-      "multipleOf": 1e-10
-    },
-    "longitude": {
-      "type": ["null", "number"],
-      "multipleOf": 1e-10
-    },
-    "active": {
+    "commercial_score": {
       "type": ["null", "integer"]
     },
-    "combined_key": {
+    "grade": {
       "type": ["null", "string"]
+    },
+    "score": {
+      "type": ["null", "integer"]
+    },
+    "negative": {
+      "type": ["null", "integer"]
+    },
+    "pending": {
+      "type": ["null", "integer"]
+    },
+    "hospitalized": {
+      "type": ["null", "integer"]
+    },
+    "death": {
+      "type": ["null", "integer"]
+    },
+    "total": {
+      "type": ["null", "integer"]
+    },
+    "last_update_et": {
+      "type": ["null", "string"]
+    },
+    "check_time_et": {
+      "type": ["null", "string"]
+    },
+    "total_test_results": {
+      "type": ["null", "integer"]
     },
     "fips": {
       "type": ["null", "string"]
     },
-    "admin_area": {
-      "type": ["null", "string"]
+    "date_modified": {
+      "type": ["null", "string"],
+      "format": "date-time"
     },
-    "county": {
-      "type": ["null", "string"]
+    "date_checked": {
+      "type": ["null", "string"],
+      "format": "date-time"
     },
-    "is_a_cruise": {
-      "type": ["null", "boolean"]
+    "notes": {
+      "type": ["null", "string"]
     }
   }
 }
