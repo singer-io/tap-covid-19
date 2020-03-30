@@ -190,22 +190,6 @@ class GitClient(object):
         if response.status_code >= 500:
             raise Server5xxError()
 
-        # 304: File Not Modified status_code
-        if response.status_code == 304:
-            return None, None
-
-        if response.status_code != 200:
-            raise_for_error(response)
-
-        last_modified = response.headers.get('Last-Modified')
-        last_modified_str = None
-
-        response_json = response.json()
-        # last-modified: https://developer.github.com/v3/#conditional-requests
-        if last_modified:
-            last_modified_dttm = datetime.strptime(last_modified, '%a, %d %b %Y %H:%M:%S %Z')
-            last_modified_str = last_modified_dttm.strftime("%Y-%m-%dT%H:%M:%SZ")
-
         # Pagination: https://developer.github.com/v3/guides/traversing-with-pagination/
         links_header = response.headers.get('Link')
         links = []
@@ -219,6 +203,23 @@ class GitClient(object):
                     next_url = url
             except AttributeError:
                 next_url = None
+
+        # last-modified: https://developer.github.com/v3/#conditional-requests
+        last_modified = response.headers.get('Last-Modified')
+        last_modified_str = None
+        if last_modified:
+            last_modified_dttm = datetime.strptime(last_modified, '%a, %d %b %Y %H:%M:%S %Z')
+            last_modified_str = last_modified_dttm.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+        # 304: File Not Modified status_code
+        if response.status_code == 304:
+            LOGGER.warning('304: FILE NOT UPDATED, Stream: {}, URL: {}'.format(endpoint, url))
+            return None, next_url, last_modified_str
+
+        if response.status_code != 200:
+            raise_for_error(response)
+
+        response_json = response.json()
 
         return response_json, next_url, last_modified_str
 

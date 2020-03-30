@@ -116,10 +116,14 @@ def transform_jh_csse_daily(record):
     # Git file fields
     file_name = record.get('git_file_name')
     new_record = {}
+    new_record['git_owner'] = record.get('git_owner')
+    new_record['git_repository'] = record.get('git_repository')
+    new_record['git_url'] = record.get('git_url')
+    new_record['git_html_url'] = record.get('git_html_url')
     new_record['git_path'] = record.get('git_path')
     new_record['git_sha'] = record.get('git_sha')
-    new_record['git_last_modified'] = record.get('git_last_modified')
     new_record['git_file_name'] = file_name
+    new_record['git_last_modified'] = record.get('git_last_modified')
     new_record['row_number'] = record.get('row_number')
 
     # Date/Datetime from file_name
@@ -328,11 +332,17 @@ def transform_eu_daily(record):
     new_record = {}
 
     # Git file fields
+    # Git file fields
     file_name = record.get('git_file_name')
+    new_record = {}
+    new_record['git_owner'] = record.get('git_owner')
+    new_record['git_repository'] = record.get('git_repository')
+    new_record['git_url'] = record.get('git_url')
+    new_record['git_html_url'] = record.get('git_html_url')
     new_record['git_path'] = record.get('git_path')
     new_record['git_sha'] = record.get('git_sha')
-    new_record['git_last_modified'] = record.get('git_last_modified')
     new_record['git_file_name'] = file_name
+    new_record['git_last_modified'] = record.get('git_last_modified')
     new_record['row_number'] = record.get('row_number')
 
     # Datetime
@@ -453,10 +463,14 @@ def transform_italy_daily(record):
     # Git file fields
     file_name = record.get('git_file_name')
     new_record = {}
+    new_record['git_owner'] = record.get('git_owner')
+    new_record['git_repository'] = record.get('git_repository')
+    new_record['git_url'] = record.get('git_url')
+    new_record['git_html_url'] = record.get('git_html_url')
     new_record['git_path'] = record.get('git_path')
     new_record['git_sha'] = record.get('git_sha')
-    new_record['git_last_modified'] = record.get('git_last_modified')
     new_record['git_file_name'] = file_name
+    new_record['git_last_modified'] = record.get('git_last_modified')
     new_record['row_number'] = record.get('row_number')
 
     # Date/Datetime from file_name ( e.g. dpc-covid19-ita-regioni-20200326.csv )

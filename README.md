@@ -245,28 +245,27 @@ Even though this tap pulls from public GitHub repositories, API request limits a
     {
       "currently_syncing": "jh_csse_daily",
       "bookmarks": {
-        "neherlab_population": "2020-03-28T02:52:25.000000Z",
-        "nytimes_us_counties": "2020-03-29T21:22:09.000000Z",
-        "italy_regional_daily": "2020-03-29T16:08:04.000000Z",
-        "italy_provincial_daily": "2020-03-29T16:08:04.000000Z",
-        "c19_trk_us_states_acs_health_insurance": "2020-03-19T20:09:37.000000Z",
-        "eu_daily": "2020-03-29T23:48:00.000000Z",
-        "italy_national_daily": "2020-03-29T16:08:04.000000Z",
-        "c19_trk_us_states_info": "2020-03-30T04:43:06.000000Z",
-        "jh_csse_daily": "2020-03-29T23:50:01.000000Z",
-        "c19_trk_us_states_daily": "2020-03-30T04:32:57.000000Z",
-        "neherlab_country_codes": "2020-03-21T22:20:39.000000Z",
-        "c19_trk_us_population_states": "2020-03-19T20:09:37.000000Z",
-        "c19_trk_us_states_kff_hospital_beds": "2020-03-19T20:09:37.000000Z",
-        "c19_trk_us_population_counties": "2020-03-19T20:09:37.000000Z",
-        "neherlab_case_counts": "2020-03-29T16:16:20.000000Z",
-        "c19_trk_us_daily": "2020-03-30T04:32:57.000000Z",
-        "c19_trk_us_population_states_age_groups": "2020-03-19T20:09:37.000000Z",
-        "c19_trk_us_states_current": "2020-03-30T04:32:57.000000Z",
-        "nytimes_us_states": "2020-03-29T21:22:09.000000Z"
+        "c19_trk_us_states_current": "2020-03-30T04:32:57Z",
+        "neherlab_country_codes": "2020-03-21T22:20:39Z",
+        "italy_regional_daily": "2020-03-30T16:02:00Z",
+        "italy_national_daily": "2020-03-30T16:02:00Z",
+        "c19_trk_us_states_acs_health_insurance": "2020-03-19T20:09:37Z",
+        "c19_trk_us_daily": "2020-03-30T04:32:57Z",
+        "c19_trk_us_population_states_age_groups": "2020-03-19T20:09:37Z",
+        "eu_daily": "2020-03-30T16:40:29Z",
+        "jh_csse_daily": "2020-03-29T23:50:01Z",
+        "nytimes_us_counties": "2020-03-29T21:22:09Z",
+        "italy_provincial_daily": "2020-03-30T16:02:00Z",
+        "nytimes_us_states": "2020-03-29T21:22:09Z",
+        "c19_trk_us_population_counties": "2020-03-19T20:09:37Z",
+        "neherlab_population": "2020-03-30T15:30:29Z",
+        "c19_trk_us_population_states": "2020-03-19T20:09:37Z",
+        "c19_trk_us_states_daily": "2020-03-30T04:32:57Z",
+        "c19_trk_us_states_kff_hospital_beds": "2020-03-19T20:09:37Z",
+        "neherlab_case_counts": "2020-03-30T15:42:43Z",
+        "c19_trk_us_states_info": "2020-03-30T04:43:06Z"
       }
     }
-
     ```
 
 4. Run the Tap in Discovery Mode
