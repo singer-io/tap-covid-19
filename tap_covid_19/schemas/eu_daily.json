@@ -82,7 +82,7 @@
         "type": ["null", "integer"]
       },
       "hospitalized": {
-        "type": ["null", "integer"]
+        "type": ["null", "number"]
       },
       "intensive_care": {
         "type": ["null", "integer"]

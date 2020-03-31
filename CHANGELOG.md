@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.0.5
+  * Fix issue with EU Daily providing decimal numbers for `hospitalized`.
+
 ## 0.0.4
   * Change sorting, filtering, bookmarking strategy to reduce number of API calls and fix issue where all files are updated each sync.
 
