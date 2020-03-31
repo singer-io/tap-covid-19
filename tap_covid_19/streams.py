@@ -96,7 +96,16 @@ STREAMS = {
     },
     # Reference https://github.com/covid19-eu-zh/covid19-eu-data/tree/master/dataset/daily
     'eu_daily': {
-        'search_path': 'search/code?q=path:dataset/daily+extension:csv+repo:covid19-eu-zh/covid19-eu-data&sort=indexed&order=desc',
+        'search_path': 'search/code?q=-filename:ecdc+path:dataset+extension:csv+repo:covid19-eu-zh/covid19-eu-data&sort=indexed&order=desc',
+        'data_key': 'items',
+        'key_properties': ['git_path', 'row_number'],
+        'replication_method': 'INCREMENTAL',
+        'replication_keys': ['git_last_modified'],
+        'bookmark_query_field': 'If-Modified-Since'
+    },
+    # Reference https://github.com/covid19-eu-zh/covid19-eu-data/tree/master/dataset/daily/ecdc
+    'eu_ecdc_daily': {
+        'search_path': 'search/code?q=filename:ecdc+path:dataset/daily/ecdc+extension:csv+repo:covid19-eu-zh/covid19-eu-data&sort=indexed&order=desc',
         'data_key': 'items',
         'key_properties': ['git_path', 'row_number'],
         'replication_method': 'INCREMENTAL',

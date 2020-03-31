@@ -750,7 +750,7 @@ def transform_neherlab_population(record):
 def transform_record(stream_name, record):
     if stream_name == 'jh_csse_daily':
         new_record = transform_jh_csse_daily(record)
-    elif stream_name == 'eu_daily':
+    elif stream_name in ('eu_daily', 'eu_ecdc_daily)'):
         new_record = transform_eu_daily(record)
     elif stream_name[:5] == 'italy':
         new_record = transform_italy_daily(record)
