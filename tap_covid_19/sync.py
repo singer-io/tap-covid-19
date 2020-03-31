@@ -116,6 +116,7 @@ def sync_endpoint(client, #pylint: disable=too-many-branches
     # Endpoint parameters
     bookmark_query_field = endpoint_config.get('bookmark_query_field', None)
     data_key = endpoint_config.get('data_key', stream_name)
+    exclude_files = endpoint_config.get('exclude_files', [])
     csv_delimiter = endpoint_config.get('csv_delimiter', ',')
     skip_header_rows = endpoint_config.get('skip_header_rows', 0)
     # LOGGER.info('data_key = {}'.format(data_key))
@@ -145,6 +146,7 @@ def sync_endpoint(client, #pylint: disable=too-many-branches
 
     # Loop through all search items pages (while there are more pages, next_url)
     #   and until bookmark_dttm < last_dttm
+    first_record = True
     while next_url is not None and bookmark_dttm >= last_dttm:
         LOGGER.info('Search URL for Stream {}: {}'.format(stream_name, next_url))
 
@@ -168,6 +170,14 @@ def sync_endpoint(client, #pylint: disable=too-many-branches
         # Loop through all search items until bookmark_dttm < last_dttm
         while i <= (item_total - 1) and bookmark_dttm >= last_dttm:
             item = search_items[i]
+            file_name = item.get('name')
+            # Skip excluded files
+            if file_name in exclude_files:
+                i = i + 1
+                if i > (item_total - 1):
+                    break
+                else:
+                    item = search_items[i]
             csv_records = []
             file_count = file_count + 1
             # url (content url) is preferable to git_url (blob url) b/c it provides
@@ -198,7 +208,7 @@ def sync_endpoint(client, #pylint: disable=too-many-branches
             # Bookmarking: search data (and commit data) sorted by last-modified desc
             # 1st item on 1st page sets max_bookmark_value = last-modified
             bookmark_dttm = strptime_to_utc(commit_last_modified)
-            if page == 1 and i == 0 and bookmark_dttm > last_dttm:
+            if first_record and bookmark_dttm > last_dttm:
                 max_bookmark_value = commit_last_modified
                 max_bookmark_dttm = bookmark_dttm
                 max_bookmark_epoch = int((max_bookmark_dttm - timezone.localize(datetime(1970, 1, 1))).total_seconds())
@@ -218,7 +228,7 @@ def sync_endpoint(client, #pylint: disable=too-many-branches
                     # initial load, send activate_version before AND after data sync
                     singer.write_message(activate_version_message)
                     LOGGER.info('INITIAL SYNC, Stream: {}, Activate Version: {}'.format(stream_name, activate_version))
-                # End: if page == 1 and i == 0 and bookmark_dttm > last_dttm
+                # End: if first_record and bookmark_dttm > last_dttm
 
             if commit_data and bookmark_dttm >= last_dttm:
                 # API request file_data for item, single-file (ignore file_next_url)
@@ -286,6 +296,7 @@ def sync_endpoint(client, #pylint: disable=too-many-branches
                     stream_name, record_count))
                 total_records = total_records + record_count
                 # End if commit_data
+            first_record = False
             i = i + 1 # Next search item record
             # End: while i <= (item_total - 1) and bookmark_dttm >= last_dttm
 

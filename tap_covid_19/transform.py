@@ -351,18 +351,20 @@ def transform_eu_daily(record):
     new_record['datetime'] = dt_str
     new_record['date'] = dt.date()
 
+    # Integer fields sometimes ends with .0, remove .0
+    for key, val in list(record.items()):
+        if key in ['population', 'deaths', 'recovered', 'tests', 'quarantine', 'intensive_care']:
+            if val.strip()[-2:] == '.0':
+                new_record[key] = val.strip()[:-2]
+            else:
+                new_record[key] = val.strip()
+
     # Report fields
     new_record['cases_100k_pop'] = record.get('cases/100k pop.')
 
     # ECDC files
     new_record['source'] = 'ecdc' if file_name.startswith('ecdc') else 'country'
     country = record.get('country')
-
-    # Intensive Care sometimes ends with .0
-    intensive_care = record.get('intensive_care', '0')
-    if intensive_care[-2:] == '.0':
-        intensive_care = intensive_care[:-2]
-    new_record['intensive_care'] = intensive_care
 
     # Skip totals for ECDC files
     if country == 'Total':
@@ -381,19 +383,14 @@ def transform_eu_daily(record):
         new_record['cases_upper'] = record.get('cases_upper')
         new_record['cases'] = record.get('cases').replace('*', '')
 
-    unchanged_fields =  [
+    unchanged_fields = [
         'country',
         'nuts_1',
         'nuts_2',
         'nuts_3',
         'lau',
-        'population',
         'percent',
-        'deaths',
-        'recovered',
-        'hospitalized',
-        'tests',
-        'quarantine',
+        'hospitalized'
     ]
     new_record.update({f: record.get(f) for f in unchanged_fields})
 
@@ -753,7 +750,7 @@ def transform_neherlab_population(record):
 def transform_record(stream_name, record):
     if stream_name == 'jh_csse_daily':
         new_record = transform_jh_csse_daily(record)
-    elif stream_name == 'eu_daily':
+    elif stream_name in ('eu_daily', 'eu_ecdc_daily)'):
         new_record = transform_eu_daily(record)
     elif stream_name[:5] == 'italy':
         new_record = transform_italy_daily(record)
