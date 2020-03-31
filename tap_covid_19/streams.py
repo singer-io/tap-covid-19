@@ -69,6 +69,7 @@ STREAMS = {
     # Reference: https://github.com/COVID19Tracking/associated-data/blob/master/us_census_data/us_census_2018_population_estimates_states.csv
     'c19_trk_us_population_states': {
         'search_path': 'search/code?q=path:us_census_data+filename:us_census_2018_population_estimates_states+extension:csv+repo:COVID19Tracking/associated-data&sort=indexed&order=desc',
+        'exclude_files': ['us_census_2018_population_estimates_states_agegroups.csv'],
         'data_key': 'items',
         'key_properties': ['git_path', 'row_number'],
         'replication_method': 'INCREMENTAL',
