@@ -174,7 +174,10 @@ def sync_endpoint(client, #pylint: disable=too-many-branches
             # Skip excluded files
             if file_name in exclude_files:
                 i = i + 1
-                item = search_items[i]
+                if i > (item_total - 1):
+                    break
+                else:
+                    item = search_items[i]
             csv_records = []
             file_count = file_count + 1
             # url (content url) is preferable to git_url (blob url) b/c it provides
