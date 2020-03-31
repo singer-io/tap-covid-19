@@ -116,6 +116,7 @@ STREAMS = {
     # Reference: https://github.com/pcm-dpc/COVID-19
     'italy_national_daily': {
         'search_path': 'search/code?q=path:dati-andamento-nazionale+extension:csv+repo:pcm-dpc/COVID-19&sort=indexed&order=desc',
+        'exclude_files': ['dpc-covid19-ita-andamento-nazionale-latest.csv', 'dpc-covid19-ita-andamento-nazionale.csv'],
         'data_key': 'items',
         'key_properties': ['git_path', 'row_number'],
         'replication_method': 'INCREMENTAL',
@@ -126,6 +127,7 @@ STREAMS = {
     # Reference: https://github.com/pcm-dpc/COVID-19
     'italy_regional_daily': {
         'search_path': 'search/code?q=path:dati-regioni+extension:csv+repo:pcm-dpc/COVID-19&sort=indexed&order=desc',
+        'exclude_files': ['dpc-covid19-ita-regioni-latest.csv', 'dpc-covid19-ita-regioni.csv'],
         'data_key': 'items',
         'key_properties': ['git_path', 'row_number'],
         'replication_method': 'INCREMENTAL',
@@ -136,6 +138,7 @@ STREAMS = {
     # Reference: https://github.com/pcm-dpc/COVID-19
     'italy_provincial_daily': {
         'search_path': 'search/code?q=path:dati-province+extension:csv+repo:pcm-dpc/COVID-19&sort=indexed&order=desc',
+        'exclude_files': ['dpc-covid19-ita-province-latest.csv', 'dpc-covid19-ita-province.csv'],
         'data_key': 'items',
         'key_properties': ['git_path', 'row_number'],
         'replication_method': 'INCREMENTAL',
