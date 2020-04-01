@@ -140,7 +140,6 @@ def transform_jh_csse_daily(record):
 
     # Loop thru keys/values
     is_a_cruise = False
-    county = None
     for key, val in list(record.items()):
         # Trim keys
         key = str(key).strip()
@@ -178,8 +177,6 @@ def transform_jh_csse_daily(record):
                 for value in vals:
                     # Trim new_val
                     new_val = str(value).strip()
-                    if 'county' in new_val.lower():
-                        county = new_val.replace('County', '').replace('county', '').strip()
 
                     # Lookup State code to get State Name
                     state = abbrev_us_state.get(new_val)
