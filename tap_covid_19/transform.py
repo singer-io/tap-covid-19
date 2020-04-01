@@ -441,12 +441,12 @@ def transform_italy_daily(record):
     intensive_care_keys = ['terapia_intensiva']
     total_hospitalized_keys = ['totale_ospedalizzati']
     home_isolation_keys = ['isolamento_domiciliare']
-    total_currently_positive_keys = ['totale_attualmente_positivi']
-    new_currently_positive_keys = ['nuovi_attualmente_positivi']
+    total_currently_positive_keys = ['totale_attualmente_positivi', 'totale_positivi']
+    new_currently_positive_keys = ['nuovi_attualmente_positivi', 'nuovi_positivi']
     discharged_recovered_keys = ['dimessi_guariti']
     deaths_keys = ['deceduti']
     total_cases_keys = ['totale_casi']
-    tests_performed_keys= ['tamponi']
+    tested_keys= ['tamponi']
     note_it_keys = ['note_it']
     note_en_keys = ['note_en']
 
@@ -461,12 +461,12 @@ def transform_italy_daily(record):
         {'it': 'terapia_intensiva',             'en': 'intensive_care'},
         {'it': 'totale_ospedalizzati',          'en': 'total_hospitalized'},
         {'it': 'isolamento_domiciliare',        'en': 'home_isolation'},
-        {'it': 'totale_attualmente_positivi',   'en': 'total_currently_positive'},
-        {'it': 'nuovi_attualmente_positivi',    'en': 'new_currently_positive'},
+        {'it': 'totale_positivi',               'en': 'total_currently_positive'},
+        {'it': 'nuovi_positivi',                'en': 'new_currently_positive'},
         {'it': 'dimessi_guariti',               'en': 'discharged_recovered'},
         {'it': 'deceduti',                      'en': 'deaths'},
         {'it': 'totale_casi',                   'en': 'total_cases'},
-        {'it': 'tamponi',                       'en': 'tests_performed'},
+        {'it': 'tamponi',                       'en': 'tested'},
         {'it': 'note_it',                       'en': 'note_it'},
         {'it': 'note_en',                       'en': 'note_en'},
         # Regional Add'l Fields
@@ -562,7 +562,7 @@ def transform_italy_daily(record):
                 pass
             if new_val == 0.0:
                 new_val = None
-            new_record['latitude'] = new_val
+            new_record['lat'] = new_val
 
         # longitude (long) is a float
         elif key in longitude_keys:
@@ -573,7 +573,7 @@ def transform_italy_daily(record):
                 pass
             if new_val == 0.0:
                 new_val = None
-            new_record['longitude'] = new_val
+            new_record['long'] = new_val
 
         # hospitalized_with_symptoms (ricoverati_con_sintomi) is an integer
         elif key in hospitalized_with_symptoms_keys:
@@ -582,7 +582,7 @@ def transform_italy_daily(record):
             except Exception as err:
                 new_val = 0
                 pass
-            new_record['hospitalized_with_symptoms_keys'] = new_val
+            new_record['hospitalized_with_symptoms'] = new_val
 
         # intensive_care (terapia_intensiva) is an integer
         elif key in intensive_care_keys:
@@ -656,14 +656,14 @@ def transform_italy_daily(record):
                 pass
             new_record['total_cases'] = new_val
 
-        # tests_performed (tamponi) is an integer
-        elif key in tests_performed_keys:
+        # tested (tamponi) is an integer
+        elif key in tested_keys:
             try:
                 new_val = int(val)
             except Exception as err:
                 new_val = 0
                 pass
-            new_record['tests_performed'] = new_val
+            new_record['tested'] = new_val
 
         # notes in italian
         elif key in note_it_keys:
