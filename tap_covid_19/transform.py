@@ -787,7 +787,7 @@ def transform_record(stream_name, record):
     elif stream_name == 'neherlab_country_codes':
         new_record = transform_neherlab_country_codes(record)
     elif stream_name == 'neherlab_population':
-        new_record = transform_neherlab_country_codes(record)
+        new_record = transform_neherlab_population(record)
     elif stream_name[:7] == 'c19_trk':
         new_record = transform_c19_trk(record)
 
