@@ -388,6 +388,39 @@ def transform_eu_daily(record):
     return new_record
 
 
+# Added by E. RAMIREZ
+def transform_eu_ecdc_daily(record):
+    new_record = {}
+
+    # Git file fields
+    file_name = record.get('git_file_name')
+    new_record = {}
+    new_record['git_owner'] = record.get('git_owner')
+    new_record['git_repository'] = record.get('git_repository')
+    new_record['git_url'] = record.get('git_url')
+    new_record['git_html_url'] = record.get('git_html_url')
+    new_record['git_path'] = record.get('git_path')
+    new_record['git_sha'] = record.get('git_sha')
+    new_record['git_file_name'] = file_name
+    new_record['git_last_modified'] = record.get('git_last_modified')
+    new_record['row_number'] = record.get('row_number')
+
+    # Datetime
+    dt_str = record.get('datetime')
+    dt = datetime.strptime(dt_str, '%Y-%m-%dT%H:%M:%S')
+    new_record['datetime'] = dt_str
+    new_record['date'] = dt.date()
+
+    unchanged_fields = [
+        'country',
+        'cases',
+        'deaths',
+    ]
+    new_record.update({f: record.get(f) for f in unchanged_fields})
+
+    return new_record
+
+
 # Added by J. SCOTT
 # Italy by National, Region, Province Daily
 # NOTES on the transformation :
@@ -741,8 +774,10 @@ def transform_neherlab_population(record):
 def transform_record(stream_name, record):
     if stream_name == 'jh_csse_daily':
         new_record = transform_jh_csse_daily(record)
-    elif stream_name in ('eu_daily', 'eu_ecdc_daily)'):
+    elif stream_name in 'eu_daily':
         new_record = transform_eu_daily(record)
+    elif stream_name in 'eu_ecdc_daily':
+        new_record = transform_eu_ecdc_daily(record)
     elif stream_name[:5] == 'italy':
         new_record = transform_italy_daily(record)
     elif stream_name in ('nytimes_us_states', 'nytimes_us_counties'):
