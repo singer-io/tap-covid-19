@@ -119,6 +119,7 @@ def sync_endpoint(client, #pylint: disable=too-many-branches
     exclude_files = endpoint_config.get('exclude_files', [])
     csv_delimiter = endpoint_config.get('csv_delimiter', ',')
     skip_header_rows = endpoint_config.get('skip_header_rows', 0)
+    activate_version_ind = endpoint_config.get('activate_version', False)
     # LOGGER.info('data_key = {}'.format(data_key))
 
     # Get the latest bookmark for the stream and set the last_datetime
@@ -192,7 +193,6 @@ def sync_endpoint(client, #pylint: disable=too-many-branches
             file_sha = item.get('sha')
             file_name = item.get('name')
             file_html_url = item.get('html_url')
-            LOGGER.info('File URL for Stream {}: {}'.format(stream_name, file_url))
             
             headers = {}
             if bookmark_query_field:
@@ -200,6 +200,7 @@ def sync_endpoint(client, #pylint: disable=too-many-branches
             # API request commits_data for single-file, to get file last_modified
             commit_url = '{}/repos/{}/{}/commits?path={}'.format(
                 client.base_url, git_owner, git_repository, file_path)
+            LOGGER.info('Commit URL for Stream {}: {}'.format(stream_name, commit_url))
             commit_data, commits_next_url, commit_last_modified = client.get(
                 url=commit_url,
                 headers=headers,
@@ -213,27 +214,32 @@ def sync_endpoint(client, #pylint: disable=too-many-branches
                 max_bookmark_dttm = bookmark_dttm
                 max_bookmark_epoch = int((max_bookmark_dttm - timezone.localize(datetime(1970, 1, 1))).total_seconds())
 
+                # For some streams (activate_version = True):
                 # Emit a Singer ACTIVATE_VERSION message before initial sync (but not subsequent syncs)
                 # everytime after each sheet sync is complete.
                 # This forces hard deletes on the data downstream if fewer records are sent.
                 # https://github.com/singer-io/singer-python/blob/master/singer/messages.py#L137
-                if last_datetime == start_date:
-                    activate_version = 0
+                if activate_version_ind:
+                    if last_datetime == start_date:
+                        activate_version = 0
+                    else:
+                        activate_version = max_bookmark_epoch
+                    activate_version_message = singer.ActivateVersionMessage(
+                            stream=stream_name,
+                            version=activate_version)
+                    if last_datetime == start_date:
+                        # initial load, send activate_version before AND after data sync
+                        singer.write_message(activate_version_message)
+                        LOGGER.info('INITIAL SYNC, Stream: {}, Activate Version: {}'.format(stream_name, activate_version))
                 else:
-                    activate_version = max_bookmark_epoch
-                activate_version_message = singer.ActivateVersionMessage(
-                        stream=stream_name,
-                        version=activate_version)
-                if last_datetime == start_date:
-                    # initial load, send activate_version before AND after data sync
-                    singer.write_message(activate_version_message)
-                    LOGGER.info('INITIAL SYNC, Stream: {}, Activate Version: {}'.format(stream_name, activate_version))
+                    activate_version = None
                 # End: if first_record and bookmark_dttm > last_dttm
 
             if commit_data and bookmark_dttm >= last_dttm:
                 # API request file_data for item, single-file (ignore file_next_url)
                 file_data = {}
                 headers = {}
+                LOGGER.info('File URL for Stream {}: {}'.format(stream_name, file_url))
                 file_data, file_next_url, file_last_modified = client.get(
                     url=file_url,
                     headers=headers,
@@ -313,11 +319,13 @@ def sync_endpoint(client, #pylint: disable=too-many-branches
         # End: next_url is not None and bookmark_dttm >= last_dttm
 
     if file_count > 0 and max_bookmark_value:
-        # End of Stream: Send Activate Version and update State
-        singer.write_message(activate_version_message)
+        # End of Stream: Send Activate Version (if needed) and update State
+        if activate_version_ind:
+            singer.write_message(activate_version_message)
         write_bookmark(state, stream_name, max_bookmark_value)
     else:
         LOGGER.warning('NO NEW DATA FOR STREAM: {}'.format(stream_name))
+        write_bookmark(state, stream_name, last_datetime)
 
     # Return total_records across all pages
     LOGGER.info('Synced Stream: {}, TOTAL pages: {}, file count: {}, total records: {}'.format(
