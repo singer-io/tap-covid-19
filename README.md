@@ -46,7 +46,7 @@ This tap:
 [eu_daily](https://github.com/covid19-eu-zh/covid19-eu-data/tree/master/dataset/daily)
 - Repository: covid19-eu-zh/covid19-eu-data
 - Folder: dataset/daily/
-- Search Endpoint: https://api.github.com/search/code?q=-filename:ecdc+path:dataset+extension:csv+repo:covid19-eu-zh/covid19-eu-data&sort=indexed&order=desc
+- Search Endpoint: https://api.github.com/search/code?q=-filename:ecdc+path:dataset/daily+extension:csv+repo:covid19-eu-zh/covid19-eu-data&sort=indexed&order=desc
   - Exclude: ecdc folder/files
 - File Endpoint: https://api.github.com/repos/covid19-eu-zh/covid19-eu-data/contents/[GIT_FILE_PATH]
 - Primary key fields: git_path, row_number
