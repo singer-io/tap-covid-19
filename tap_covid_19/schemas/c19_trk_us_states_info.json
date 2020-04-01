@@ -33,13 +33,13 @@
     "state": {
       "type": ["null", "string"]
     },
-    "covid_19_site_old": {
+    "covid19_site_old": {
       "type": ["null", "string"]
     },
-    "covid_19_site": {
+    "covid19_site": {
       "type": ["null", "string"]
     },
-    "covid_19_site_secondary": {
+    "covid19_site_secondary": {
       "type": ["null", "string"]
     },
     "twitter": {
