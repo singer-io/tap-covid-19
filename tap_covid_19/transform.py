@@ -700,9 +700,8 @@ def transform_nytimes(record):
     new_record['datetime'] = dttm_str
 
     # For US State code lookup
-    abbrev_us_state = dict(map(reversed, us_state_abbrev.items()))
-    state_code = record.get('state')
-    new_record['state_name'] = abbrev_us_state.get(state_code)
+    state_name = record.get('state')
+    new_record['state_code'] = us_state_abbrev.get(state_name)
 
     return new_record
 
