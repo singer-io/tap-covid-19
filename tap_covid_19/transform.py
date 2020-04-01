@@ -327,11 +327,10 @@ def transform_c19_trk(record):
     return new_record
 
 
-# Added by E. RAMIEREZ
+# Added by E. RAMIREZ
 def transform_eu_daily(record):
     new_record = {}
 
-    # Git file fields
     # Git file fields
     file_name = record.get('git_file_name')
     new_record = {}
@@ -361,14 +360,6 @@ def transform_eu_daily(record):
 
     # Report fields
     new_record['cases_100k_pop'] = record.get('cases/100k pop.')
-
-    # ECDC files
-    new_record['source'] = 'ecdc' if file_name.startswith('ecdc') else 'country'
-    country = record.get('country')
-
-    # Skip totals for ECDC files
-    if country == 'Total':
-        return None
 
     cases = record.get('cases')
     # e.g. "1 to 4"
