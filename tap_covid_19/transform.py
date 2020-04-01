@@ -730,6 +730,9 @@ def transform_neherlab_case_counts(record):
     new_record['datetime'] = dttm_str
     new_record.pop('time', None)
 
+    new_record['icu'] = new_record.get('ICU')
+    new_record.pop('ICU', None)
+
     if not record.get('location'):
         # Get location from Git path
         new_record['location'] = record.get('git_path').replace(
