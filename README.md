@@ -11,7 +11,6 @@ This tap:
   - CSV Data Files: [Git API Search](https://developer.github.com/v3/search/#search-code) with [filename and extension filters](https://help.github.com/en/articles/searching-code) from the following COVID-19 Repositories; streaming in new/changed files:
     - [Johns Hopkins CSSE Data](https://github.com/CSSEGISandData/COVID-19)
       - [jh_csse_daily](https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_daily_reports)
-      - [jh_csse_time_series](https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series)
     - [EU Data](https://github.com/covid19-eu-zh/covid19-eu-data)
       - [eu_daily](https://github.com/covid19-eu-zh/covid19-eu-data/tree/master/dataset)
       - [eu_ecdc_daily](https://github.com/covid19-eu-zh/covid19-eu-data/tree/master/dataset/daily/ecdc)
@@ -22,7 +21,7 @@ This tap:
     - [NY Times US Data](https://github.com/nytimes/covid-19-data)
       - [nytimes_us_states](https://github.com/nytimes/covid-19-data/blob/master/us-states.csv)
       - [nytimes_us_counties](https://github.com/nytimes/covid-19-data/blob/master/us-counties.csv)
-    - [Neherlab Scenarios Data](https://github.com/neherlab/covid19_scenarios_data) from [Neherlab Biozentrum, Center for Computaitonal Biology](https://neherlab.org/)
+    - [Neherlab Scenarios Data](https://github.com/neherlab/covid19_scenarios_data) from [Neherlab Biozentrum, Center for Computational Biology](https://neherlab.org/)
       - [neherlab_case_counts](https://github.com/neherlab/covid19_scenarios_data/tree/master/case-counts)
       - [neherlab_country_codes](https://github.com/neherlab/covid19_scenarios_data/blob/master/country_codes.csv)
       - [neherlab_population](https://github.com/neherlab/covid19_scenarios_data/blob/master/populationData.tsv)
@@ -44,23 +43,14 @@ This tap:
 
 ## Streams
 
-[jh_csse_daily](https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_daily_reports)
-- Repository: CSSEGISandData/COVID-19
-- Folder: csse_covid_19_data/csse_covid_19_daily_reports
-- Search Endpoint: https://api.github.com/search/code?q=path:csse_covid_19_data/csse_covid_19_daily_reports+extension:csv+repo:CSSEGISandData/COVID-19&sort=indexed&order=asc
-- File Endpoint: https://api.github.com/repos/CSSEGISandData/COVID-19/contents/[GIT_FILE_PATH]
-- Primary key fields: git_path, row_number
-- Replication strategy: INCREMENTAL (Search ALL, filter results)
-  - Bookmark field: git_last_modified
-- Transformations: Remove content node, add repository fields, Decode, parse jh_daily_file content, cleanse location fields, and convert to JSON
-
 [eu_daily](https://github.com/covid19-eu-zh/covid19-eu-data/tree/master/dataset/daily)
 - Repository: covid19-eu-zh/covid19-eu-data
 - Folder: dataset/daily/
 - Search Endpoint: https://api.github.com/search/code?q=-filename:ecdc+path:dataset+extension:csv+repo:covid19-eu-zh/covid19-eu-data&sort=indexed&order=desc
+  - Exclude: ecdc folder/files
 - File Endpoint: https://api.github.com/repos/covid19-eu-zh/covid19-eu-data/contents/[GIT_FILE_PATH]
 - Primary key fields: git_path, row_number
-- Replication strategy: INCREMENTAL (Search ALL, filter results)
+- Replication strategy: Many files w/ new files each day. Use INCREMENTAL replication only (NOT activate_version).
   - Bookmark field: git_last_modified
 - Transformations: Remove content node, add repository fields, decode, parse eu_daily_file content, get date from table datetime, merge differing column sets, convert to JSON
 - Notes: source = country
@@ -71,7 +61,7 @@ This tap:
 - Search Endpoint: https://api.github.com/search/code?q=filename:ecdc+path:dataset/daily/ecdc+extension:csv+repo:covid19-eu-zh/covid19-eu-data&sort=indexed&order=desc
 - File Endpoint: https://api.github.com/repos/covid19-eu-zh/covid19-eu-data/contents/[GIT_FILE_PATH]
 - Primary key fields: git_path, row_number
-- Replication strategy: INCREMENTAL (Search ALL, filter results)
+- Replication strategy: Many files w/ new file each day. Use INCREMENTAL replication only (NOT activate_version).
   - Bookmark field: git_last_modified
 - Transformations: Remove content node, add repository fields, decode, parse eu_daily_file content, get date from table datetime, merge differing column sets, convert to JSON
 - Notes: source = ecdc
@@ -80,9 +70,10 @@ This tap:
 - Repository: pcm-dpc/COVID-19
 - Folder: dati-andamento-nazionale
 - Search Endpoint: hhttps://api.github.com/search/code?q=path:dati-andamento-nazionale+extension:csv+repo:pcm-dpc/COVID-19&sort=indexed&order=asc
+  - exclude: current files
 - File Endpoint: https://api.github.com/repos/pcm-dpc/COVID-19/contents/[GIT_FILE_PATH]
 - Primary key fields: git_path, row_number
-- Replication strategy: INCREMENTAL (Search ALL, filter results)
+- Replication strategy: Many files w/ new file each day. Use INCREMENTAL replication only (NOT activate_version).
   - Bookmark field: git_last_modified
 - Transformations: Remove content node, add repository fields, decode, parse italy_national_daily content, cleanse location fields, and convert to JSON
 
@@ -90,9 +81,10 @@ This tap:
 - Repository: pcm-dpc/COVID-19
 - Folder: dati-regioni
 - Search Endpoint: https://api.github.com/search/code?q=path:dati-regioni+extension:csv+repo:pcm-dpc/COVID-19&sort=indexed&order=asc
+  - Exclude current files
 - File Endpoint: https://api.github.com/repos/pcm-dpc/COVID-19/contents/[GIT_FILE_PATH]
 - Primary key fields: git_path, row_number
-- Replication strategy: INCREMENTAL (Search ALL, filter results)
+- Replication strategy: Many files w/ new files each day. Use INCREMENTAL replication only (NOT activate_version).
   - Bookmark field: git_last_modified
 - Transformations: Remove content node, add repository fields, decode, parse italy_regional_daily content, cleanse location fields, and convert to JSON
 
@@ -100,19 +92,30 @@ This tap:
 - Repository: pcm-dpc/COVID-19
 - Folder: dati-province
 - Search Endpoint: https://api.github.com/search/code?q=path:dati-province+extension:csv+repo:pcm-dpc/COVID-19&sort=indexed&order=asc
+  - Exclude: current files
 - File Endpoint: https://api.github.com/repos/pcm-dpc/COVID-19/contents/[GIT_FILE_PATH]
 - Primary key fields: git_path, row_number
-- Replication strategy: INCREMENTAL (Search ALL, filter results)
+- Replication strategy: Many files w/ new files each day. Use INCREMENTAL replication only (NOT activate_version).
   - Bookmark field: git_last_modified
 - Transformations: Remove content node, add repository fields, decode, parse italy_provincial_daily content, cleanse location fields, and convert to JSON
+
+[jh_csse_daily](https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_daily_reports)
+- Repository: CSSEGISandData/COVID-19
+- Folder: csse_covid_19_data/csse_covid_19_daily_reports
+- Search Endpoint: https://api.github.com/search/code?q=path:csse_covid_19_data/csse_covid_19_daily_reports+extension:csv+repo:CSSEGISandData/COVID-19&sort=indexed&order=asc
+- File Endpoint: https://api.github.com/repos/CSSEGISandData/COVID-19/contents/[GIT_FILE_PATH]
+- Primary key fields: git_path, row_number
+- Replication strategy: Many files w/ new file each day. Use INCREMENTAL replication only (NOT activate_version).
+  - Bookmark field: git_last_modified
+- Transformations: Remove content node, add repository fields, Decode, parse jh_daily_file content, cleanse location fields, and convert to JSON
 
 [nytimes_us_states](https://github.com/nytimes/covid-19-data/blob/master/us-states.csv)
 - Repository: nytimes/covid-19-data
 - Folder: . (root folder)
 - Search Endpoint: https://api.github.com/search/code?q=filename:us-states+extension:csv+repo:nytimes/covid-19-data&sort=indexed&order=asc
 - File Endpoint: https://api.github.com/repos/nytimes/covid-19-data/contents/[GIT_FILE_PATH]
-- Primary key fields: git_path, row_number
-- Replication strategy: INCREMENTAL (Search ALL, filter results)
+- Primary key fields: row_number
+- Replication strategy: Single file w/ daily updates (additional rows). Use FULL_TABLE replication w/ activate_version.
   - Bookmark field: git_last_modified
 - Transformations: Remove content node, add repository fields, decode, parse us-states content and convert to JSON, lookup state_name
 
@@ -121,8 +124,8 @@ This tap:
 - Folder: . (root folder)
 - Search Endpoint: https://api.github.com/search/code?q=filename:us-counties+extension:csv+repo:nytimes/covid-19-data&sort=indexed&order=asc
 - File Endpoint: https://api.github.com/repos/nytimes/covid-19-data/contents/[GIT_FILE_PATH]
-- Primary key fields: git_path, row_number
-- Replication strategy: INCREMENTAL (Search ALL, filter results)
+- Primary key fields: row_number
+- Replication strategy: Single file w/ daily updates (additional rows). Use FULL_TABLE replication w/ activate_version.
   - Bookmark field: git_last_modified
 - Transformations: Remove content node, add repository fields, decode, parse us-counties content and convert to JSON, lookup state_name
 
@@ -131,8 +134,8 @@ This tap:
 - Folder: data
 - Search Endpoint: https://api.github.com/search/code?q=path:data+filename:state_current+extension:csv+repo:COVID19Tracking/covid-tracking-data&sort=indexed&order=asc
 - File Endpoint: https://api.github.com/repos/COVID19Tracking/covid-tracking-data/contents/[GIT_FILE_PATH]
-- Primary key fields: git_path, row_number
-- Replication strategy: INCREMENTAL (Search ALL, filter results)
+- Primary key fields: row_number
+- Replication strategy: Single file w/ daily updates (additional rows). Use FULL_TABLE replication w/ activate_version.
   - Bookmark field: git_last_modified
 - Transformations: Remove content node, add repository fields, decode, parse states_current content and convert to JSON, camelCase to snake_case field keys
 
@@ -141,8 +144,8 @@ This tap:
 - Folder: data
 - Search Endpoint: https://api.github.com/search/code?q=path:data+filename:states_daily_4pm_et+extension:csv+repo:COVID19Tracking/covid-tracking-data&sort=indexed&order=asc
 - File Endpoint: https://api.github.com/repos/COVID19Tracking/covid-tracking-data/contents/[GIT_FILE_PATH]
-- Primary key fields: git_path, row_number
-- Replication strategy: INCREMENTAL (Search ALL, filter results)
+- Primary key fields: row_number
+- Replication strategy: Single file w/ daily updates (updated rows). Use FULL_TABLE replication w/ activate_version.
   - Bookmark field: git_last_modified
 - Transformations: Remove content node, add repository fields, decode, parse states_daily content and convert to JSON, camelCase to snake_case field keys
 
@@ -151,8 +154,8 @@ This tap:
 - Folder: data
 - Search Endpoint: https://api.github.com/search/code?q=path:data+filename:states_info+extension:csv+repo:COVID19Tracking/covid-tracking-data&sort=indexed&order=asc
 - File Endpoint: https://api.github.com/repos/COVID19Tracking/covid-tracking-data/contents/[GIT_FILE_PATH]
-- Primary key fields: git_path, row_number
-- Replication strategy: INCREMENTAL (Search ALL, filter results)
+- Primary key fields: row_number
+- Replication strategy: Single file w/ occasional updates (updated rows). Use FULL_TABLE replication w/ activate_version.
   - Bookmark field: git_last_modified
 - Transformations: Remove content node, add repository fields, ecode, parse states_info content and convert to JSON, camelCase to snake_case field keys
 
@@ -162,8 +165,8 @@ This tap:
 - Search Endpoint: https://api.github.com/search/code?q=path:us_census_data+filename:us_census_2018_population_estimates_states+extension:csv+repo:COVID19Tracking/associated-data&sort=indexed&order=asc
     - Exclude: agegroups file
 - File Endpoint: https://api.github.com/repos/COVID19Tracking/associated-data/contents/[GIT_FILE_PATH]
-- Primary key fields: git_path, row_number
-- Replication strategy: INCREMENTAL (Search ALL, filter results)
+- Primary key fields: row_number
+- Replication strategy: Single file w/ minimal updates. Use FULL_TABLE replication w/ activate_version.
   - Bookmark field: git_last_modified
 - Transformations: Remove content node, add repository fields, decode, parse us_population_states content and convert to JSON, camelCase to snake_case field keys
 
@@ -172,8 +175,8 @@ This tap:
 - Folder: us_census_data
 - Search Endpoint: https://api.github.com/search/code?q=path:us_census_data+filename:us_census_2018_population_estimates_states_agegroups+extension:csv+repo:COVID19Tracking/associated-data&sort=indexed&order=asc
 - File Endpoint: https://api.github.com/repos/COVID19Tracking/associated-data/contents/[GIT_FILE_PATH]
-- Primary key fields: git_path, row_number
-- Replication strategy: INCREMENTAL (Search ALL, filter results)
+- Primary key fields: row_number
+- Replication strategy: Single file w/ minimal updates. Use FULL_TABLE replication w/ activate_version.
   - Bookmark field: git_last_modified
 - Transformations: Remove content node, add repository fields, decode, parse us_population_states_age_groups content and convert to JSON, camelCase to snake_case field keys
 
@@ -182,8 +185,8 @@ This tap:
 - Folder: us_census_data
 - Search Endpoint: https://api.github.com/search/code?q=path:us_census_data+filename:us_census_2018_population_estimates_counties+extension:csv+repo:COVID19Tracking/associated-data&sort=indexed&order=asc
 - File Endpoint: https://api.github.com/repos/COVID19Tracking/associated-data/contents/[GIT_FILE_PATH]
-- Primary key fields: git_path, row_number
-- Replication strategy: INCREMENTAL (Search ALL, filter results)
+- Primary key fields: row_number
+- Replication strategy: Single file w/ minimal updates. Use FULL_TABLE replication w/ activate_version.
   - Bookmark field: git_last_modified
 - Transformations: Remove content node, add repository fields, decode, parse us_population_counties content and convert to JSON, camelCase to snake_case field keys
 
@@ -192,8 +195,8 @@ This tap:
 - Folder: acs_health_insurance
 - Search Endpoint: https://api.github.com/search/code?q=path:acs_health_insurance+filename:acs_2018_health_insurance_coverage_estimates+extension:csv+repo:COVID19Tracking/associated-data&sort=indexed&order=asc
 - File Endpoint: https://api.github.com/repos/COVID19Tracking/associated-data/contents/[GIT_FILE_PATH]
-- Primary key fields: git_path, row_number
-- Replication strategy: INCREMENTAL (Search ALL, filter results)
+- Primary key fields: row_number
+- Replication strategy: Single file w/ minimal updates. Use FULL_TABLE replication w/ activate_version.
   - Bookmark field: git_last_modified
 - Transformations: Remove content node, add repository fields, decode, parse us_acs_health_insurance content and convert to JSON, camelCase to snake_case field keys
 
@@ -203,8 +206,8 @@ This tap:
 - Search Endpoint: https://api.github.com/search/code?q=path:kff_hospital_beds+filename:kff_usa_hospital_beds_per_capita_2018+extension:csv+repo:COVID19Tracking/associated-data&sort=indexed&order=asc
 - File Endpoint: https://api.github.com/repos/COVID19Tracking/associated-data/contents/[GIT_FILE_PATH]
 - Original Sourc: KFF (Kaiser Family Foundation)
-- Primary key fields: git_path, row_number
-- Replication strategy: INCREMENTAL (Search ALL, filter results)
+- Primary key fields: row_number
+- Replication strategy: Single file w/ minimal updates. Use FULL_TABLE replication w/ activate_version.
   - Bookmark field: git_last_modified
 - Transformations: Remove content node, add repository fields, decode, parse us_kff_hospital_beds content and convert to JSON, camelCase to snake_case field keys
 
@@ -256,30 +259,31 @@ Even though this tap pulls from public GitHub repositories, API request limits a
 
     ```json
     {
-      "currently_syncing": "jh_csse_daily",
+      "currently_syncing": "eu_daily",
       "bookmarks": {
-        "c19_trk_us_states_current": "2020-03-30T04:32:57Z",
-        "neherlab_country_codes": "2020-03-21T22:20:39Z",
-        "italy_regional_daily": "2020-03-30T16:02:00Z",
-        "italy_national_daily": "2020-03-30T16:02:00Z",
-        "c19_trk_us_states_acs_health_insurance": "2020-03-19T20:09:37Z",
-        "c19_trk_us_daily": "2020-03-30T04:32:57Z",
-        "c19_trk_us_population_states_age_groups": "2020-03-19T20:09:37Z",
-        "eu_daily": "2020-03-30T16:40:29Z",
-        "eu_ecdc_daily": "2020-03-30T16:40:29Z",
-        "jh_csse_daily": "2020-03-29T23:50:01Z",
-        "nytimes_us_counties": "2020-03-29T21:22:09Z",
-        "italy_provincial_daily": "2020-03-30T16:02:00Z",
-        "nytimes_us_states": "2020-03-29T21:22:09Z",
-        "c19_trk_us_population_counties": "2020-03-19T20:09:37Z",
-        "neherlab_population": "2020-03-30T15:30:29Z",
-        "c19_trk_us_population_states": "2020-03-19T20:09:37Z",
-        "c19_trk_us_states_daily": "2020-03-30T04:32:57Z",
+        "italy_national_daily": "2020-03-31T16:04:30Z",
+        "c19_trk_us_states_info": "2020-03-31T22:00:05Z",
+        "eu_daily": "2020-03-31T23:47:48Z",
+        "eu_ecdc_daily": "2020-03-31T12:38:47Z",
         "c19_trk_us_states_kff_hospital_beds": "2020-03-19T20:09:37Z",
-        "neherlab_case_counts": "2020-03-30T15:42:43Z",
-        "c19_trk_us_states_info": "2020-03-30T04:43:06Z"
+        "neherlab_country_codes": "2020-03-21T22:20:39Z",
+        "nytimes_us_counties": "2020-03-31T13:58:59Z",
+        "c19_trk_us_states_current": "2020-03-31T22:00:05Z",
+        "neherlab_population": "2020-03-30T15:30:29Z",
+        "italy_regional_daily": "2020-03-31T16:36:40Z",
+        "c19_trk_us_daily": "2020-03-31T22:00:05Z",
+        "c19_trk_us_states_daily": "2020-03-31T22:00:05Z",
+        "c19_trk_us_population_states": "2020-03-19T20:09:37Z",
+        "neherlab_case_counts": "2020-03-30T19:47:05Z",
+        "c19_trk_us_population_counties": "2020-03-19T20:09:37Z",
+        "nytimes_us_states": "2020-03-31T13:58:59Z",
+        "italy_provincial_daily": "2020-03-31T16:28:32Z",
+        "c19_trk_us_states_acs_health_insurance": "2020-03-19T20:09:37Z",
+        "jh_csse_daily": "2020-04-01T00:08:36Z",
+        "c19_trk_us_population_states_age_groups": "2020-03-19T20:09:37Z"
       }
     }
+  
     ```
 
 4. Run the Tap in Discovery Mode
@@ -353,7 +357,8 @@ Even though this tap pulls from public GitHub repositories, API request limits a
     | c19_trk_us_states_daily                 | 1317    | 1       |
     | neherlab_case_counts                    | 14660   | 1       |
     | eu_daily                                | 18109   | 1       |
-    | c19_trk_us_daily                        | 0       | 1       |
+    | eu_ecdc_daily                           | 416     | 1       |
+    | c19_trk_us_daily                        | 28      | 1       |
     | italy_national_daily                    | 35      | 1       |
     | c19_trk_us_states_info                  | 56      | 1       |
     | jh_csse_daily                           | 35000   | 1       |

@@ -1,7 +1,10 @@
 # Changelog
 
+## 0.0.6
+  * Adjust `streams.py` and `sync.py` logic for `activate_version` based on source data replication strategy: single files vs. multiple files daily.
+
 ## 0.0.5
-  * Fix issue with EU Daily providing decimal numbers for `hospitalized`.
+  * Fix issue with EU Daily providing decimal numbers for `hospitalized`. Add logic for `exclude_files`.
 
 ## 0.0.4
   * Change sorting, filtering, bookmarking strategy to reduce number of API calls and fix issue where all files are updated each sync.
