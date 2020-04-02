@@ -30,10 +30,6 @@
       "row_number": {
         "type": ["null", "integer"]
       },
-      "source": {
-        "type": ["null", "string"],
-        "enum": ["country", "ecdc"]
-      },
       "date": {
         "type": ["null", "string"],
         "format": "date"
@@ -45,53 +41,11 @@
       "country": {
         "type": ["null", "string"]
       },
-      "nuts_1": {
-        "type": ["null", "string"]
-      },
-      "nuts_2": {
-        "type": ["null", "string"]
-      },
-      "nuts_3": {
-        "type": ["null", "string"]
-      },
-      "lau": {
-        "type": ["null", "string"]
-      },
       "cases": {
-        "type": ["null", "number"]
-      },
-      "cases_lower": {
-        "type": ["null", "integer"]
-      },
-      "cases_upper": {
-        "type": ["null", "integer"]
-      },
-      "population": {
-        "type": ["null", "number"]
-      },
-      "cases_100k_pop": {
-        "type": ["null", "number"]
-      },
-      "percent": {
         "type": ["null", "number"]
       },
       "deaths": {
         "type": ["null", "number"]
-      },
-      "recovered": {
-        "type": ["null", "integer"]
-      },
-      "hospitalized": {
-        "type": ["null", "number"]
-      },
-      "intensive_care": {
-        "type": ["null", "integer"]
-      },
-      "tests": {
-        "type": ["null", "integer"]
-      },
-      "quarantine": {
-        "type": ["null", "integer"]
       }
     }
   }

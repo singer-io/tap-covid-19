@@ -116,7 +116,7 @@ STREAMS = {
     # Many files w/ new files each day. Use INCREMENTAL replication only (NOT activate_version)
     # NOTE: -filename:ecdc in search_path means: exclude ecdc filenames
     'eu_daily': {
-        'search_path': 'search/code?q=-filename:ecdc+path:dataset+extension:csv+repo:covid19-eu-zh/covid19-eu-data&sort=indexed&order=desc',
+        'search_path': 'search/code?q=-filename:ecdc+path:dataset/daily+extension:csv+repo:covid19-eu-zh/covid19-eu-data&sort=indexed&order=desc',
         'data_key': 'items',
         'key_properties': ['git_path', 'row_number'],
         'replication_method': 'INCREMENTAL',

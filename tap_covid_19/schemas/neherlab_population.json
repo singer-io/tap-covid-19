@@ -50,6 +50,9 @@
       },
       "imports_per_day": {
         "type": ["null", "number"]
+      },
+      "hemisphere": {
+        "type": ["null", "string"]
       }
     }
   }

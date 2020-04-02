@@ -41,7 +41,7 @@
     "state": {
       "type": ["null", "string"]
     },
-    "state_name": {
+    "state_code": {
       "type": ["null", "string"]
     },
     "fips": {

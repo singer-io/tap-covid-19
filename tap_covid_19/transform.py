@@ -140,7 +140,6 @@ def transform_jh_csse_daily(record):
 
     # Loop thru keys/values
     is_a_cruise = False
-    county = None
     for key, val in list(record.items()):
         # Trim keys
         key = str(key).strip()
@@ -178,8 +177,6 @@ def transform_jh_csse_daily(record):
                 for value in vals:
                     # Trim new_val
                     new_val = str(value).strip()
-                    if 'county' in new_val.lower():
-                        county = new_val.replace('County', '').replace('county', '').strip()
 
                     # Lookup State code to get State Name
                     state = abbrev_us_state.get(new_val)
@@ -327,11 +324,10 @@ def transform_c19_trk(record):
     return new_record
 
 
-# Added by E. RAMIEREZ
+# Added by E. RAMIREZ
 def transform_eu_daily(record):
     new_record = {}
 
-    # Git file fields
     # Git file fields
     file_name = record.get('git_file_name')
     new_record = {}
@@ -362,14 +358,6 @@ def transform_eu_daily(record):
     # Report fields
     new_record['cases_100k_pop'] = record.get('cases/100k pop.')
 
-    # ECDC files
-    new_record['source'] = 'ecdc' if file_name.startswith('ecdc') else 'country'
-    country = record.get('country')
-
-    # Skip totals for ECDC files
-    if country == 'Total':
-        return None
-
     cases = record.get('cases')
     # e.g. "1 to 4"
     if 'to' in cases:
@@ -391,6 +379,39 @@ def transform_eu_daily(record):
         'lau',
         'percent',
         'hospitalized'
+    ]
+    new_record.update({f: record.get(f) for f in unchanged_fields})
+
+    return new_record
+
+
+# Added by E. RAMIREZ
+def transform_eu_ecdc_daily(record):
+    new_record = {}
+
+    # Git file fields
+    file_name = record.get('git_file_name')
+    new_record = {}
+    new_record['git_owner'] = record.get('git_owner')
+    new_record['git_repository'] = record.get('git_repository')
+    new_record['git_url'] = record.get('git_url')
+    new_record['git_html_url'] = record.get('git_html_url')
+    new_record['git_path'] = record.get('git_path')
+    new_record['git_sha'] = record.get('git_sha')
+    new_record['git_file_name'] = file_name
+    new_record['git_last_modified'] = record.get('git_last_modified')
+    new_record['row_number'] = record.get('row_number')
+
+    # Datetime
+    dt_str = record.get('datetime')
+    dt = datetime.strptime(dt_str, '%Y-%m-%dT%H:%M:%S')
+    new_record['datetime'] = dt_str
+    new_record['date'] = dt.date()
+
+    unchanged_fields = [
+        'country',
+        'cases',
+        'deaths',
     ]
     new_record.update({f: record.get(f) for f in unchanged_fields})
 
@@ -420,12 +441,12 @@ def transform_italy_daily(record):
     intensive_care_keys = ['terapia_intensiva']
     total_hospitalized_keys = ['totale_ospedalizzati']
     home_isolation_keys = ['isolamento_domiciliare']
-    total_currently_positive_keys = ['totale_attualmente_positivi']
-    new_currently_positive_keys = ['nuovi_attualmente_positivi']
+    total_currently_positive_keys = ['totale_attualmente_positivi', 'totale_positivi']
+    new_currently_positive_keys = ['nuovi_attualmente_positivi', 'nuovi_positivi']
     discharged_recovered_keys = ['dimessi_guariti']
     deaths_keys = ['deceduti']
     total_cases_keys = ['totale_casi']
-    tests_performed_keys= ['tamponi']
+    tested_keys= ['tamponi']
     note_it_keys = ['note_it']
     note_en_keys = ['note_en']
 
@@ -440,12 +461,12 @@ def transform_italy_daily(record):
         {'it': 'terapia_intensiva',             'en': 'intensive_care'},
         {'it': 'totale_ospedalizzati',          'en': 'total_hospitalized'},
         {'it': 'isolamento_domiciliare',        'en': 'home_isolation'},
-        {'it': 'totale_attualmente_positivi',   'en': 'total_currently_positive'},
-        {'it': 'nuovi_attualmente_positivi',    'en': 'new_currently_positive'},
+        {'it': 'totale_positivi',               'en': 'total_currently_positive'},
+        {'it': 'nuovi_positivi',                'en': 'new_currently_positive'},
         {'it': 'dimessi_guariti',               'en': 'discharged_recovered'},
         {'it': 'deceduti',                      'en': 'deaths'},
         {'it': 'totale_casi',                   'en': 'total_cases'},
-        {'it': 'tamponi',                       'en': 'tests_performed'},
+        {'it': 'tamponi',                       'en': 'tested'},
         {'it': 'note_it',                       'en': 'note_it'},
         {'it': 'note_en',                       'en': 'note_en'},
         # Regional Add'l Fields
@@ -541,7 +562,7 @@ def transform_italy_daily(record):
                 pass
             if new_val == 0.0:
                 new_val = None
-            new_record['latitude'] = new_val
+            new_record['lat'] = new_val
 
         # longitude (long) is a float
         elif key in longitude_keys:
@@ -552,7 +573,7 @@ def transform_italy_daily(record):
                 pass
             if new_val == 0.0:
                 new_val = None
-            new_record['longitude'] = new_val
+            new_record['long'] = new_val
 
         # hospitalized_with_symptoms (ricoverati_con_sintomi) is an integer
         elif key in hospitalized_with_symptoms_keys:
@@ -561,7 +582,7 @@ def transform_italy_daily(record):
             except Exception as err:
                 new_val = 0
                 pass
-            new_record['hospitalized_with_symptoms_keys'] = new_val
+            new_record['hospitalized_with_symptoms'] = new_val
 
         # intensive_care (terapia_intensiva) is an integer
         elif key in intensive_care_keys:
@@ -635,14 +656,14 @@ def transform_italy_daily(record):
                 pass
             new_record['total_cases'] = new_val
 
-        # tests_performed (tamponi) is an integer
-        elif key in tests_performed_keys:
+        # tested (tamponi) is an integer
+        elif key in tested_keys:
             try:
                 new_val = int(val)
             except Exception as err:
                 new_val = 0
                 pass
-            new_record['tests_performed'] = new_val
+            new_record['tested'] = new_val
 
         # notes in italian
         elif key in note_it_keys:
@@ -676,9 +697,8 @@ def transform_nytimes(record):
     new_record['datetime'] = dttm_str
 
     # For US State code lookup
-    abbrev_us_state = dict(map(reversed, us_state_abbrev.items()))
-    state_code = record.get('state')
-    new_record['state_name'] = abbrev_us_state.get(state_code)
+    state_name = record.get('state')
+    new_record['state_code'] = us_state_abbrev.get(state_name)
 
     return new_record
 
@@ -706,6 +726,9 @@ def transform_neherlab_case_counts(record):
     new_record['date'] = date_str[:10]
     new_record['datetime'] = dttm_str
     new_record.pop('time', None)
+
+    new_record['icu'] = new_record.get('ICU')
+    new_record.pop('ICU', None)
 
     if not record.get('location'):
         # Get location from Git path
@@ -750,8 +773,10 @@ def transform_neherlab_population(record):
 def transform_record(stream_name, record):
     if stream_name == 'jh_csse_daily':
         new_record = transform_jh_csse_daily(record)
-    elif stream_name in ('eu_daily', 'eu_ecdc_daily)'):
+    elif stream_name in 'eu_daily':
         new_record = transform_eu_daily(record)
+    elif stream_name in 'eu_ecdc_daily':
+        new_record = transform_eu_ecdc_daily(record)
     elif stream_name[:5] == 'italy':
         new_record = transform_italy_daily(record)
     elif stream_name in ('nytimes_us_states', 'nytimes_us_counties'):
@@ -761,7 +786,7 @@ def transform_record(stream_name, record):
     elif stream_name == 'neherlab_country_codes':
         new_record = transform_neherlab_country_codes(record)
     elif stream_name == 'neherlab_population':
-        new_record = transform_neherlab_country_codes(record)
+        new_record = transform_neherlab_population(record)
     elif stream_name[:7] == 'c19_trk':
         new_record = transform_c19_trk(record)
 
