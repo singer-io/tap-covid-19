@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.8
+  * Change field `row_number` (a reserved word in Redshift) to `__sdc_row_number`. This requires dropping/re-loading tables in downstream target. Added 403 error handling for API Abuse Detection to wait for 2 minutes before resuming requests. Add endpoint: `neherlab_icu_capacity`.
+
+## 0.0.7
+  * Functional testing and validation changes to fields, streams, transforms.
+
 ## 0.0.6
   * Adjust `streams.py` and `sync.py` logic for `activate_version` based on source data replication strategy: single files vs. multiple files daily.
 
