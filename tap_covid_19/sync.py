@@ -273,7 +273,7 @@ def sync_endpoint(client, #pylint: disable=too-many-branches
                         record['git_sha'] = file_sha
                         record['git_file_name'] = file_name
                         record['git_last_modified'] = commit_last_modified
-                        record['row_number'] = row_number
+                        record['__sdc_row_number'] = row_number
 
                         # Transform record and append
                         transformed_csv_record = {}

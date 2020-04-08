@@ -30,38 +30,32 @@
       "__sdc_row_number": {
         "type": ["null", "integer"]
       },
-      "name": {
+      "country": {
         "type": ["null", "string"]
       },
-      "alpha_2": {
-        "type": ["null", "string"]
+      "acute_care": {
+        "type": ["null", "integer"]
       },
-      "alpha_3": {
-        "type": ["null", "string"]
+      "acute_care_per_100k": {
+        "type": ["null", "integer"]
       },
-      "country_code": {
-        "type": ["null", "string"]
+      "imcu": {
+        "type": ["null", "integer"]
       },
-      "iso_3166_2": {
-        "type": ["null", "string"]
+      "icu": {
+        "type": ["null", "integer"]
       },
-      "region": {
-        "type": ["null", "string"]
+      "critical_care": {
+        "type": ["null", "integer"]
       },
-      "sub_region": {
-        "type": ["null", "string"]
+      "critical_care_per_100k": {
+        "type": ["null", "number"]
       },
-      "intermediate_region": {
-        "type": ["null", "string"]
+      "percent_of_total": {
+        "type": ["null", "number"]
       },
-      "region_code": {
-        "type": ["null", "string"]
-      },
-      "sub_region_code": {
-        "type": ["null", "string"]
-      },
-      "intermediate_region_code": {
-        "type": ["null", "string"]
+      "gdp": {
+        "type": ["null", "number"]
       }
     }
   }

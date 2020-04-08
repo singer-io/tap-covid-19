@@ -1,5 +1,6 @@
 import re
 from datetime import datetime
+import time
 import backoff
 import requests
 from requests.exceptions import ConnectionError
@@ -15,6 +16,11 @@ class Server5xxError(Exception):
 
 class Server429Error(Exception):
     pass
+
+
+class AbuseDetection403Error(Exception):
+    pass
+
 
 class Server304Error(Exception):
     pass
@@ -143,7 +149,7 @@ class GitClient(object):
 
 
     @backoff.on_exception(backoff.expo,
-                          (Server5xxError, ConnectionError, Server429Error),
+                          (Server5xxError, ConnectionError, Server429Error, AbuseDetection403Error),
                           max_tries=7,
                           factor=3)
     # Rate Limiting: https://developer.github.com/v3/#rate-limiting
@@ -215,6 +221,17 @@ class GitClient(object):
         if response.status_code == 304:
             LOGGER.warning('304: FILE NOT UPDATED, Stream: {}, URL: {}'.format(endpoint, url))
             return None, next_url, last_modified_str
+        # Catch 403 error with message:
+        #  "You have triggered an abuse detection mechanism. Please wait a few minutes before you try again."
+        # Reference: https://developer.github.com/v3/#abuse-rate-limits
+        if response.status_code == 403:
+            response_json = response.json()
+            response_message = response_json.get('message', '')
+            if 'abuse detection mechanism.' in response_message:
+                # Wait 3 minutes
+                LOGGER.warning('Abuse Detection 403 Error: API triggered an abuse detection mechanism. Waiting 3 mins and trying again.')
+                time.sleep(180) # Wait for 3 minutes
+                raise AbuseDetection403Error(response)
 
         if response.status_code != 200:
             raise_for_error(response)

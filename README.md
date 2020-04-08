@@ -49,7 +49,7 @@ This tap:
 - Search Endpoint: https://api.github.com/search/code?q=-filename:ecdc+path:dataset/daily+extension:csv+repo:covid19-eu-zh/covid19-eu-data&sort=indexed&order=desc
   - Exclude: ecdc folder/files
 - File Endpoint: https://api.github.com/repos/covid19-eu-zh/covid19-eu-data/contents/[GIT_FILE_PATH]
-- Primary key fields: git_path, row_number
+- Primary key fields: git_path, __sdc_row_number
 - Replication strategy: Many files w/ new files each day. Use INCREMENTAL replication only (NOT activate_version).
   - Bookmark field: git_last_modified
 - Transformations: Remove content node, add repository fields, decode, parse eu_daily_file content, get date from table datetime, merge differing column sets, convert to JSON
@@ -60,7 +60,7 @@ This tap:
 - Folder: dataset/daily/ecdc
 - Search Endpoint: https://api.github.com/search/code?q=filename:ecdc+path:dataset/daily/ecdc+extension:csv+repo:covid19-eu-zh/covid19-eu-data&sort=indexed&order=desc
 - File Endpoint: https://api.github.com/repos/covid19-eu-zh/covid19-eu-data/contents/[GIT_FILE_PATH]
-- Primary key fields: git_path, row_number
+- Primary key fields: git_path, __sdc_row_number
 - Replication strategy: Many files w/ new file each day. Use INCREMENTAL replication only (NOT activate_version).
   - Bookmark field: git_last_modified
 - Transformations: Remove content node, add repository fields, decode, parse eu_daily_file content, get date from table datetime, merge differing column sets, convert to JSON
@@ -72,7 +72,7 @@ This tap:
 - Search Endpoint: hhttps://api.github.com/search/code?q=path:dati-andamento-nazionale+extension:csv+repo:pcm-dpc/COVID-19&sort=indexed&order=asc
   - exclude: current files
 - File Endpoint: https://api.github.com/repos/pcm-dpc/COVID-19/contents/[GIT_FILE_PATH]
-- Primary key fields: git_path, row_number
+- Primary key fields: git_path, __sdc_row_number
 - Replication strategy: Many files w/ new file each day. Use INCREMENTAL replication only (NOT activate_version).
   - Bookmark field: git_last_modified
 - Transformations: Remove content node, add repository fields, decode, parse italy_national_daily content, cleanse location fields, and convert to JSON
@@ -83,7 +83,7 @@ This tap:
 - Search Endpoint: https://api.github.com/search/code?q=path:dati-regioni+extension:csv+repo:pcm-dpc/COVID-19&sort=indexed&order=asc
   - Exclude current files
 - File Endpoint: https://api.github.com/repos/pcm-dpc/COVID-19/contents/[GIT_FILE_PATH]
-- Primary key fields: git_path, row_number
+- Primary key fields: git_path, __sdc_row_number
 - Replication strategy: Many files w/ new files each day. Use INCREMENTAL replication only (NOT activate_version).
   - Bookmark field: git_last_modified
 - Transformations: Remove content node, add repository fields, decode, parse italy_regional_daily content, cleanse location fields, and convert to JSON
@@ -94,7 +94,7 @@ This tap:
 - Search Endpoint: https://api.github.com/search/code?q=path:dati-province+extension:csv+repo:pcm-dpc/COVID-19&sort=indexed&order=asc
   - Exclude: current files
 - File Endpoint: https://api.github.com/repos/pcm-dpc/COVID-19/contents/[GIT_FILE_PATH]
-- Primary key fields: git_path, row_number
+- Primary key fields: git_path, __sdc_row_number
 - Replication strategy: Many files w/ new files each day. Use INCREMENTAL replication only (NOT activate_version).
   - Bookmark field: git_last_modified
 - Transformations: Remove content node, add repository fields, decode, parse italy_provincial_daily content, cleanse location fields, and convert to JSON
@@ -104,7 +104,7 @@ This tap:
 - Folder: csse_covid_19_data/csse_covid_19_daily_reports
 - Search Endpoint: https://api.github.com/search/code?q=path:csse_covid_19_data/csse_covid_19_daily_reports+extension:csv+repo:CSSEGISandData/COVID-19&sort=indexed&order=asc
 - File Endpoint: https://api.github.com/repos/CSSEGISandData/COVID-19/contents/[GIT_FILE_PATH]
-- Primary key fields: git_path, row_number
+- Primary key fields: git_path, __sdc_row_number
 - Replication strategy: Many files w/ new file each day. Use INCREMENTAL replication only (NOT activate_version).
   - Bookmark field: git_last_modified
 - Transformations: Remove content node, add repository fields, Decode, parse jh_daily_file content, cleanse location fields, and convert to JSON
@@ -114,7 +114,7 @@ This tap:
 - Folder: . (root folder)
 - Search Endpoint: https://api.github.com/search/code?q=filename:us-states+extension:csv+repo:nytimes/covid-19-data&sort=indexed&order=asc
 - File Endpoint: https://api.github.com/repos/nytimes/covid-19-data/contents/[GIT_FILE_PATH]
-- Primary key fields: row_number
+- Primary key fields: __sdc_row_number
 - Replication strategy: Single file w/ daily updates (additional rows). Use FULL_TABLE replication w/ activate_version.
   - Bookmark field: git_last_modified
 - Transformations: Remove content node, add repository fields, decode, parse us-states content and convert to JSON, lookup state_name
@@ -124,7 +124,7 @@ This tap:
 - Folder: . (root folder)
 - Search Endpoint: https://api.github.com/search/code?q=filename:us-counties+extension:csv+repo:nytimes/covid-19-data&sort=indexed&order=asc
 - File Endpoint: https://api.github.com/repos/nytimes/covid-19-data/contents/[GIT_FILE_PATH]
-- Primary key fields: row_number
+- Primary key fields: __sdc_row_number
 - Replication strategy: Single file w/ daily updates (additional rows). Use FULL_TABLE replication w/ activate_version.
   - Bookmark field: git_last_modified
 - Transformations: Remove content node, add repository fields, decode, parse us-counties content and convert to JSON, lookup state_name
@@ -134,7 +134,7 @@ This tap:
 - Folder: data
 - Search Endpoint: https://api.github.com/search/code?q=path:data+filename:state_current+extension:csv+repo:COVID19Tracking/covid-tracking-data&sort=indexed&order=asc
 - File Endpoint: https://api.github.com/repos/COVID19Tracking/covid-tracking-data/contents/[GIT_FILE_PATH]
-- Primary key fields: row_number
+- Primary key fields: __sdc_row_number
 - Replication strategy: Single file w/ daily updates (additional rows). Use FULL_TABLE replication w/ activate_version.
   - Bookmark field: git_last_modified
 - Transformations: Remove content node, add repository fields, decode, parse states_current content and convert to JSON, camelCase to snake_case field keys
@@ -144,7 +144,7 @@ This tap:
 - Folder: data
 - Search Endpoint: https://api.github.com/search/code?q=path:data+filename:states_daily_4pm_et+extension:csv+repo:COVID19Tracking/covid-tracking-data&sort=indexed&order=asc
 - File Endpoint: https://api.github.com/repos/COVID19Tracking/covid-tracking-data/contents/[GIT_FILE_PATH]
-- Primary key fields: row_number
+- Primary key fields: __sdc_row_number
 - Replication strategy: Single file w/ daily updates (updated rows). Use FULL_TABLE replication w/ activate_version.
   - Bookmark field: git_last_modified
 - Transformations: Remove content node, add repository fields, decode, parse states_daily content and convert to JSON, camelCase to snake_case field keys
@@ -154,7 +154,7 @@ This tap:
 - Folder: data
 - Search Endpoint: https://api.github.com/search/code?q=path:data+filename:states_info+extension:csv+repo:COVID19Tracking/covid-tracking-data&sort=indexed&order=asc
 - File Endpoint: https://api.github.com/repos/COVID19Tracking/covid-tracking-data/contents/[GIT_FILE_PATH]
-- Primary key fields: row_number
+- Primary key fields: __sdc_row_number
 - Replication strategy: Single file w/ occasional updates (updated rows). Use FULL_TABLE replication w/ activate_version.
   - Bookmark field: git_last_modified
 - Transformations: Remove content node, add repository fields, ecode, parse states_info content and convert to JSON, camelCase to snake_case field keys
@@ -165,7 +165,7 @@ This tap:
 - Search Endpoint: https://api.github.com/search/code?q=path:us_census_data+filename:us_census_2018_population_estimates_states+extension:csv+repo:COVID19Tracking/associated-data&sort=indexed&order=asc
     - Exclude: agegroups file
 - File Endpoint: https://api.github.com/repos/COVID19Tracking/associated-data/contents/[GIT_FILE_PATH]
-- Primary key fields: row_number
+- Primary key fields: __sdc_row_number
 - Replication strategy: Single file w/ minimal updates. Use FULL_TABLE replication w/ activate_version.
   - Bookmark field: git_last_modified
 - Transformations: Remove content node, add repository fields, decode, parse us_population_states content and convert to JSON, camelCase to snake_case field keys
@@ -175,7 +175,7 @@ This tap:
 - Folder: us_census_data
 - Search Endpoint: https://api.github.com/search/code?q=path:us_census_data+filename:us_census_2018_population_estimates_states_agegroups+extension:csv+repo:COVID19Tracking/associated-data&sort=indexed&order=asc
 - File Endpoint: https://api.github.com/repos/COVID19Tracking/associated-data/contents/[GIT_FILE_PATH]
-- Primary key fields: row_number
+- Primary key fields: __sdc_row_number
 - Replication strategy: Single file w/ minimal updates. Use FULL_TABLE replication w/ activate_version.
   - Bookmark field: git_last_modified
 - Transformations: Remove content node, add repository fields, decode, parse us_population_states_age_groups content and convert to JSON, camelCase to snake_case field keys
@@ -185,7 +185,7 @@ This tap:
 - Folder: us_census_data
 - Search Endpoint: https://api.github.com/search/code?q=path:us_census_data+filename:us_census_2018_population_estimates_counties+extension:csv+repo:COVID19Tracking/associated-data&sort=indexed&order=asc
 - File Endpoint: https://api.github.com/repos/COVID19Tracking/associated-data/contents/[GIT_FILE_PATH]
-- Primary key fields: row_number
+- Primary key fields: __sdc_row_number
 - Replication strategy: Single file w/ minimal updates. Use FULL_TABLE replication w/ activate_version.
   - Bookmark field: git_last_modified
 - Transformations: Remove content node, add repository fields, decode, parse us_population_counties content and convert to JSON, camelCase to snake_case field keys
@@ -195,7 +195,7 @@ This tap:
 - Folder: acs_health_insurance
 - Search Endpoint: https://api.github.com/search/code?q=path:acs_health_insurance+filename:acs_2018_health_insurance_coverage_estimates+extension:csv+repo:COVID19Tracking/associated-data&sort=indexed&order=asc
 - File Endpoint: https://api.github.com/repos/COVID19Tracking/associated-data/contents/[GIT_FILE_PATH]
-- Primary key fields: row_number
+- Primary key fields: __sdc_row_number
 - Replication strategy: Single file w/ minimal updates. Use FULL_TABLE replication w/ activate_version.
   - Bookmark field: git_last_modified
 - Transformations: Remove content node, add repository fields, decode, parse us_acs_health_insurance content and convert to JSON, camelCase to snake_case field keys
@@ -206,7 +206,7 @@ This tap:
 - Search Endpoint: https://api.github.com/search/code?q=path:kff_hospital_beds+filename:kff_usa_hospital_beds_per_capita_2018+extension:csv+repo:COVID19Tracking/associated-data&sort=indexed&order=asc
 - File Endpoint: https://api.github.com/repos/COVID19Tracking/associated-data/contents/[GIT_FILE_PATH]
 - Original Sourc: KFF (Kaiser Family Foundation)
-- Primary key fields: row_number
+- Primary key fields: __sdc_row_number
 - Replication strategy: Single file w/ minimal updates. Use FULL_TABLE replication w/ activate_version.
   - Bookmark field: git_last_modified
 - Transformations: Remove content node, add repository fields, decode, parse us_kff_hospital_beds content and convert to JSON, camelCase to snake_case field keys
@@ -255,7 +255,7 @@ Even though this tap pulls from public GitHub repositories, API request limits a
     
     Optionally, also create a `state.json` file. `currently_syncing` is an optional attribute used for identifying the last object to be synced in case the job is interrupted mid-stream. The next run would begin where the last job left off.
     The `...files` streams use a datetime bookmark based on the GitHub `last_modified` datetime of the file that is returned in the GET header response.
-    The `csv-data` streams us an integer bookmark based on the UNIX epoch time when the file batch was last sent. This is used with the `row_number` as a part of the Singer.io [Activate Version](https://github.com/singer-io/singer-python/blob/master/singer/messages.py#L137) logic to insert/update and delete the delta (when the new batch has fewer records).
+    The `csv-data` streams us an integer bookmark based on the UNIX epoch time when the file batch was last sent. This is used with the `__sdc_row_number` as a part of the Singer.io [Activate Version](https://github.com/singer-io/singer-python/blob/master/singer/messages.py#L137) logic to insert/update and delete the delta (when the new batch has fewer records).
 
     ```json
     {

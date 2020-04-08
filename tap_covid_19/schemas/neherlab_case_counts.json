@@ -27,7 +27,7 @@
         "type": ["null", "string"],
         "format": "date-time"
       },
-      "row_number": {
+      "__sdc_row_number": {
         "type": ["null", "integer"]
       },
       "location": {

@@ -124,7 +124,7 @@ def transform_jh_csse_daily(record):
     new_record['git_sha'] = record.get('git_sha')
     new_record['git_file_name'] = file_name
     new_record['git_last_modified'] = record.get('git_last_modified')
-    new_record['row_number'] = record.get('row_number')
+    new_record['__sdc_row_number'] = record.get('__sdc_row_number')
 
     # Date/Datetime from file_name
     timezone = pytz.timezone('UTC')
@@ -339,7 +339,7 @@ def transform_eu_daily(record):
     new_record['git_sha'] = record.get('git_sha')
     new_record['git_file_name'] = file_name
     new_record['git_last_modified'] = record.get('git_last_modified')
-    new_record['row_number'] = record.get('row_number')
+    new_record['__sdc_row_number'] = record.get('__sdc_row_number')
 
     # Datetime
     dt_str = record.get('datetime')
@@ -400,7 +400,7 @@ def transform_eu_ecdc_daily(record):
     new_record['git_sha'] = record.get('git_sha')
     new_record['git_file_name'] = file_name
     new_record['git_last_modified'] = record.get('git_last_modified')
-    new_record['row_number'] = record.get('row_number')
+    new_record['__sdc_row_number'] = record.get('__sdc_row_number')
 
     # Datetime
     dt_str = record.get('datetime')
@@ -489,7 +489,7 @@ def transform_italy_daily(record):
     new_record['git_sha'] = record.get('git_sha')
     new_record['git_file_name'] = file_name
     new_record['git_last_modified'] = record.get('git_last_modified')
-    new_record['row_number'] = record.get('row_number')
+    new_record['__sdc_row_number'] = record.get('__sdc_row_number')
 
     # Date/Datetime from file_name ( e.g. dpc-covid19-ita-regioni-20200326.csv )
     timezone = pytz.timezone('UTC')
@@ -753,6 +753,7 @@ def transform_neherlab_population(record):
     new_record = {}
     for key, val in list(record.items()):
         new_key = key
+        new_val = str(val).strip()
         if key == 'populationServed':
             new_key = 'population'
         elif key == 'ageDistribution':
@@ -766,7 +767,35 @@ def transform_neherlab_population(record):
         elif key == 'importsPerDay':
             new_key = 'imports_per_day'
 
-        new_record[new_key] = val
+        new_record[new_key] = new_val
+    return new_record
+
+
+# CSV headers, 4/7/2020:    country	AcuteCare	AcuteCarPer100k	IMCU	ICU 	CriticalCare	CriticalCarePer100k	percentOfTotal	GDP
+def transform_neherlab_icu_capacity(record):
+    new_record = {}
+    for key, val in list(record.items()):
+        key = key.strip()
+        new_key = key
+        new_val = str(val).strip()
+        if key == 'AcuteCare':
+            new_key = 'acute_care'
+        elif key in ('AcuteCarPer100k', 'AcuteCarePer100k'):
+            new_key = 'acute_care_per_100k'
+        elif key == 'IMCU':
+            new_key = 'imcu'
+        elif key == 'ICU':
+            new_key = 'icu'
+        elif key == 'CriticalCare':
+            new_key = 'critical_care'
+        elif key == 'CriticalCarePer100k':
+            new_key = 'critical_care_per_100k'
+        elif key == 'percentOfTotal':
+            new_key = 'percent_of_total'
+        elif key == 'GDP':
+            new_key = 'gdp'
+
+        new_record[new_key] = new_val
     return new_record
 
 
@@ -787,6 +816,8 @@ def transform_record(stream_name, record):
         new_record = transform_neherlab_country_codes(record)
     elif stream_name == 'neherlab_population':
         new_record = transform_neherlab_population(record)
+    elif stream_name == 'neherlab_icu_capacity':
+        new_record = transform_neherlab_icu_capacity(record)
     elif stream_name[:7] == 'c19_trk':
         new_record = transform_c19_trk(record)
 
