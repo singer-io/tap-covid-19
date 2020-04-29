@@ -146,7 +146,8 @@ STREAMS = {
         'replication_method': 'INCREMENTAL',
         'activate_version': False,
         'replication_keys': ['git_last_modified'],
-        'bookmark_query_field': 'If-Modified-Since'
+        'bookmark_query_field': 'If-Modified-Since',
+        'character_set': 'latin_1'
     },
     # Dati COVID-19 Italia (COVID-19 data Italy)
     # Reference: https://github.com/pcm-dpc/COVID-19/tree/master/dati-andamento-nazionale
@@ -159,7 +160,8 @@ STREAMS = {
         'replication_method': 'INCREMENTAL',
         'activate_version': False,
         'replication_keys': ['git_last_modified'],
-        'bookmark_query_field': 'If-Modified-Since'
+        'bookmark_query_field': 'If-Modified-Since',
+        'character_set': 'latin_1'
     },
     # Dati COVID-19 Italia (COVID-19 data Italy)
     # Reference: https://github.com/pcm-dpc/COVID-19
@@ -172,7 +174,8 @@ STREAMS = {
         'replication_method': 'INCREMENTAL',
         'activate_version': False,
         'replication_keys': ['git_last_modified'],
-        'bookmark_query_field': 'If-Modified-Since'
+        'bookmark_query_field': 'If-Modified-Since',
+        'character_set': 'latin_1'
     },
     # Reference: https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_daily_reports
     # Many files w/ new file each day. Use INCREMENTAL replication only (NOT activate_version)
