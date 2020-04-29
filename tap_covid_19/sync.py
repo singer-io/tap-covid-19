@@ -120,7 +120,7 @@ def sync_endpoint(client, #pylint: disable=too-many-branches
     csv_delimiter = endpoint_config.get('csv_delimiter', ',')
     skip_header_rows = endpoint_config.get('skip_header_rows', 0)
     activate_version_ind = endpoint_config.get('activate_version', False)
-    character_set = endpoint_config.get('character_set', 'utf-8')
+    alt_character_set = endpoint_config.get('alt_character_set', 'utf-8')
     # LOGGER.info('data_key = {}'.format(data_key))
 
     # Get the latest bookmark for the stream and set the last_datetime
@@ -253,9 +253,15 @@ def sync_endpoint(client, #pylint: disable=too-many-branches
                     content_list = []
                     if content:
                         content_b64 = base64.b64decode(content)
-                        # Italian files use character_set: latin_1
+                        # Italian files typically use character_set: utf-8
+                        #  However, some newer files use character_set: latin_1
                         # All other files use character_set: utf-8 (default)
-                        content_str = content_b64.decode(character_set)
+                        try:
+                            content_str = content_b64.decode('utf-8')
+                        except UnicodeDecodeError as err:
+                            LOGGER.warning('UTF-8 UNICODE DECODE ERROR: {}'.format(err))
+                            # Try decoding with Alternate Character Set (from streams.py)
+                            content_str = content_b64.decode(alt_character_set)
                         content_array = content_str.splitlines()
                         content_array_sliced = content_array[skip_header_rows:]
                         reader = csv.DictReader(content_array_sliced, delimiter=csv_delimiter)

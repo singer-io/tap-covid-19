@@ -10,6 +10,7 @@
 #   params: Query, sort, and other endpoint specific parameters; default = {}
 #   data_key: JSON element containing the results list for the endpoint; default = 'results'
 #   bookmark_query_field: From date-time field used for filtering the query
+#   alt_character_set: Alternate character set to try if UTF-8 decoding does not work
 
 STREAMS = {
     # Reference: https://github.com/COVID19Tracking/covid-tracking-data/blob/master/data/us_daily.csv
@@ -147,7 +148,7 @@ STREAMS = {
         'activate_version': False,
         'replication_keys': ['git_last_modified'],
         'bookmark_query_field': 'If-Modified-Since',
-        'character_set': 'latin_1'
+        'alt_character_set': 'latin_1'
     },
     # Dati COVID-19 Italia (COVID-19 data Italy)
     # Reference: https://github.com/pcm-dpc/COVID-19/tree/master/dati-andamento-nazionale
@@ -161,7 +162,7 @@ STREAMS = {
         'activate_version': False,
         'replication_keys': ['git_last_modified'],
         'bookmark_query_field': 'If-Modified-Since',
-        'character_set': 'latin_1'
+        'alt_character_set': 'latin_1'
     },
     # Dati COVID-19 Italia (COVID-19 data Italy)
     # Reference: https://github.com/pcm-dpc/COVID-19
@@ -175,7 +176,7 @@ STREAMS = {
         'activate_version': False,
         'replication_keys': ['git_last_modified'],
         'bookmark_query_field': 'If-Modified-Since',
-        'character_set': 'latin_1'
+        'alt_character_set': 'latin_1'
     },
     # Reference: https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_daily_reports
     # Many files w/ new file each day. Use INCREMENTAL replication only (NOT activate_version)
