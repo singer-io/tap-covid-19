@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.0.9
+  * Add `character_set` parameter to `streams.py` and `sync.py` to deal with errors arising from accented characters in the Italian dataset files, which use `latin_1` and not `utf-8`. Fixes error decoding: `Forlì-Cesena`.
+
 ## 0.0.8
   * Change field `row_number` (a reserved word in Redshift) to `__sdc_row_number`. This requires dropping/re-loading tables in downstream target. Added 403 error handling for API Abuse Detection to wait for 2 minutes before resuming requests. Add endpoint: `neherlab_icu_capacity`.
 
