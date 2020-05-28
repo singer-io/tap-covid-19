@@ -343,7 +343,10 @@ def transform_eu_daily(record):
 
     # Datetime
     dt_str = record.get('datetime')
-    dt = datetime.strptime(dt_str, '%Y-%m-%dT%H:%M:%S')
+    try:
+        dt = datetime.strptime(dt_str, '%Y-%m-%dT%H:%M:%S')
+    except ValueError:
+        dt = datetime.strptime(dt_str, '%Y-%m-%d')
     new_record['datetime'] = dt_str
     new_record['date'] = dt.date()
 
