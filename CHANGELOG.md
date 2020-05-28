@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.0.10
+  * For `eu_daily` data, fall back to date parsing format when date-time parsing fails [#8](https://github.com/singer-io/tap-covid-19/pull/8)
+
 ## 0.0.9
   * Add `character_set` parameter to `streams.py` and `sync.py` to deal with errors arising from accented characters in the Italian dataset files, which use `latin_1` and not `utf-8`. Fixes error decoding: `Forlì-Cesena`.
 

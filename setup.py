@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 
 setup(name='tap-covid-19',
-      version='0.0.9',
+      version='0.0.10',
       description='Singer.io tap for extracting COVID-19 CSV data files with the GitHub API',
       author='jeff.huth@bytecode.io',
       classifiers=['Programming Language :: Python :: 3 :: Only'],
